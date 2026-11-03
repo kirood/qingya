@@ -322,25 +322,6 @@
   <footer>
     <div>「青芽」— 面向全体大学生的成长搭子 · 数绘青春「数智新技艺」参赛作品</div>
     <div class="safe">🔒 离线模式：你的信息仅保存在本机浏览器，不会上传到任何服务器</div>
-    <details open>
-      <summary>☁️ 服务器与账号（可选，不登录也能用）</summary>
-      <div class="api-note">
-        <p>💡 <b>不登录也能完整使用</b>——双击打开就是「本机离线模式」，四个功能都能用。想「换设备不丢、数据上云、接真实大模型」时，再连服务器并注册账号。</p>
-        <label>服务器地址</label>
-        <div class="api-form">
-          <input type="text" id="serverUrl" placeholder="例如 http://localhost:3000 或你的部署地址">
-          <button class="btn ghost" onclick="saveServer()">连接</button>
-        </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
-          <input type="text" id="authUser" placeholder="用户名" style="flex:1;min-width:120px;">
-          <input type="password" id="authPass" placeholder="密码（≥6 位）" style="flex:1;min-width:120px;">
-          <button class="btn ghost" onclick="doAuth('login')">登录</button>
-          <button class="btn ghost" onclick="doAuth('register')">注册</button>
-          <button class="btn ghost" onclick="doLogout()">退出</button>
-        </div>
-        <p style="font-size:12px;color:var(--muted);margin-top:8px;">🔒 数据按账号严格隔离：登录后只在云端保存，退出即回到本机，互不串台。</p>
-      </div>
-    </details>
     <details>
       <summary>📁 导出 / 导入我的数据（换设备不丢）</summary>
       <div class="api-note">
@@ -755,7 +736,7 @@ function updateStatus(){
   const dot=document.getElementById('engineBadge').querySelector('.dot');
   if(isAccount()){ txt.textContent = SVR_UP ? ('云端同步 · '+UNAME) : '云端模式 · 服务器不可达'; dot.style.background='var(--amber)'; }
   else if(serverOn()){ txt.textContent = SVR_UP ? (SVR_ONLINE?'在线增强 · 免登录':'已连服务器 · 免登录') : '服务器不可达 · 已回本机'; dot.style.background='var(--green2)'; }
-  else { txt.textContent='本机模式 · 离线可用'; dot.style.background='var(--green2)'; }
+  else { txt.textContent='离线可用 · 数据仅存本机'; dot.style.background='var(--green2)'; }
 }
 
 function saveServer(){
@@ -918,14 +899,6 @@ document.querySelectorAll('nav button').forEach(b=>{
 /* 初始化 */
 (async function init(){
   renderGad7Form();
-  // 自动探测：页面从 http(s) 打开时，尝试把当前网址当作后端（file:// 则保持离线）
-  if(!SVR && location.protocol.startsWith('http')){
-    try{
-      const r=await fetch(location.origin+'/api/health');
-      if(r.ok){ const h=await r.json(); if(h && h.name==='青芽后端'){ SVR=location.origin; localStorage.setItem('qingya_server',SVR); } }
-    }catch(e){}
-  }
-  const su=document.getElementById('serverUrl'); if(su) su.value=SVR;
   if(TOKEN && SVR){
     try{ await pullAccount(); }catch(e){ /* 服务器不可达/令牌失效：仍按云端空数据显示，不串台 */ }
   }
