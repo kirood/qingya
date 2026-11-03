@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="青芽 · 青年成长 AI 搭子：一个不替你答题，而是帮你在 AI 时代看清自己、把焦虑变成行动的成长小助手。">
+<title>青芽 · 青年成长 AI 搭子</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+<style>
+  :root{
+    --green:#059669; --green2:#10b981; --teal:#0ea5e9;
+    --amber:#f59e0b; --indigo:#6366f1;
+    --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:"PingFang SC","Microsoft YaHei",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    color:var(--ink); min-height:100vh; line-height:1.7;
+    background:
+      radial-gradient(60% 50% at 12% 8%, rgba(16,185,129,.20), transparent 62%),
+      radial-gradient(48% 40% at 88% 12%, rgba(14,165,233,.16), transparent 60%),
+      radial-gradient(52% 52% at 50% 100%, rgba(245,158,11,.12), transparent 62%),
+      linear-gradient(160deg,#f0fdf4 0%, #ecfeff 48%, #fef9ec 100%);
+    background-attachment:fixed; padding:24px 16px 60px;
+  }
+  .wrap{max-width:860px; margin:0 auto; position:relative;}
+
+  /* ===== 顶栏 ===== */
+  header{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:14px;}
+  .brand{display:flex; align-items:center; gap:13px;}
+  .logo{width:52px; height:52px; border-radius:16px; background:linear-gradient(135deg,var(--green),var(--teal));
+    display:flex; align-items:center; justify-content:center; font-size:29px;
+    box-shadow:0 8px 22px rgba(5,150,105,.30); animation:float 4s ease-in-out infinite;}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  .brand h1{font-size:23px; letter-spacing:.5px; line-height:1.2;}
+  .brand h1 em{font-style:normal; background:linear-gradient(90deg,var(--green),var(--teal)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .brand .sub{font-size:12.5px; color:var(--muted);}
+  .badge{font-size:12px; padding:6px 13px; border-radius:999px; background:rgba(255,255,255,.9); border:1px solid var(--line);
+    color:var(--muted); display:flex; align-items:center; gap:7px; box-shadow:0 2px 8px rgba(0,0,0,.05); cursor:default;}
+  .badge .dot{width:8px; height:8px; border-radius:50%; background:var(--green2); box-shadow:0 0 0 0 rgba(16,185,129,.5); animation:pulse 2s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(16,185,129,.5)}70%{box-shadow:0 0 0 6px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
+
+  /* ===== 导航 ===== */
+  nav{display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; position:sticky; top:8px; z-index:20;
+    background:rgba(255,255,255,.72); backdrop-filter:blur(12px); padding:8px; border-radius:16px; box-shadow:0 6px 20px rgba(0,0,0,.05);}
+  nav button{flex:1; min-width:118px; padding:11px 10px; border:none; border-radius:12px; cursor:pointer;
+    background:transparent; color:var(--muted); font-size:14.5px; font-weight:600; transition:.2s; font-family:inherit;}
+  nav button:hover{background:#fff; color:var(--ink);}
+  nav button.on{background:linear-gradient(135deg,var(--green),var(--teal)); color:#fff; box-shadow:0 5px 16px rgba(5,150,105,.30);}
+
+  .panel{display:none;}
+  .panel.on{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(8px);}to{opacity:1; transform:none;}}
+
+  .card{background:rgba(255,255,255,.82); backdrop-filter:blur(12px); border-radius:20px; padding:26px;
+    box-shadow:0 12px 34px rgba(0,0,0,.07), 0 1px 0 rgba(255,255,255,.7) inset; margin-bottom:18px; border:1px solid rgba(255,255,255,.6);}
+  .card h2{font-size:18px; margin-bottom:6px; display:flex; align-items:center; gap:8px;}
+  .card .hint{font-size:13.5px; color:var(--muted); margin-bottom:16px;}
+
+  label{display:block; font-size:13.5px; font-weight:600; margin:14px 0 6px; color:#374151;}
+  input[type=text], input[type=password], textarea, select{
+    width:100%; padding:12px 14px; border:1.5px solid var(--line); border-radius:12px; font-size:14.5px;
+    font-family:inherit; color:var(--ink); background:#fafafa; transition:.2s;}
+  input:focus, textarea:focus, select:focus{outline:none; border-color:var(--green); background:#fff;
+    box-shadow:0 0 0 4px rgba(16,185,129,.14);}
+  textarea{resize:vertical; min-height:92px;}
+
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; margin-top:16px;
+    padding:12px 22px; border:none; border-radius:12px; cursor:pointer; font-size:15px; font-weight:700;
+    color:#fff; background:linear-gradient(135deg,var(--green),var(--teal)); transition:.2s; font-family:inherit;
+    box-shadow:0 6px 18px rgba(5,150,105,.28);}
+  .btn:hover{transform:translateY(-2px); box-shadow:0 10px 26px rgba(5,150,105,.36);}
+  .btn:active{transform:translateY(0);}
+  .btn.ghost{background:#fff; color:var(--green); border:1.5px solid var(--green); box-shadow:none;}
+
+  .result{margin-top:18px; padding:18px; border-radius:14px; background:#f7faf7; border:1px solid #e7f2ea; display:none;}
+  .result.show{display:block; animation:fade .35s ease;}
+
+  /* ===== 首页 ===== */
+  .hero{text-align:center; padding:26px 18px 22px;}
+  .hero-logo{font-size:52px; display:inline-block; animation:float 4s ease-in-out infinite;}
+  .hero-title{font-size:36px; font-weight:800; letter-spacing:.5px; line-height:1.2;}
+  .hero-title em{font-style:normal; background:linear-gradient(90deg,var(--green),var(--teal),var(--indigo)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .hero-tag{font-size:19px; font-weight:700; color:#065f46; margin-top:8px;}
+  .hero-desc{max-width:560px; margin:12px auto 0; color:#475569; font-size:14.5px; line-height:1.75;}
+  .flow{display:flex; gap:10px; align-items:stretch; justify-content:center; flex-wrap:wrap; margin-top:24px;}
+  .flow-step{flex:1; min-width:150px; background:#fff; border:1px solid var(--line); border-radius:16px; padding:16px 12px;
+    cursor:pointer; transition:.2s; box-shadow:0 6px 16px rgba(0,0,0,.05);}
+  .flow-step:hover{transform:translateY(-4px); border-color:var(--green2); box-shadow:0 14px 28px rgba(0,0,0,.10);}
+  .flow-step .no{display:inline-flex; width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,var(--green),var(--teal));
+    color:#fff; font-weight:800; align-items:center; justify-content:center; font-size:14px; margin-bottom:8px;}
+  .flow-step b{display:block; font-size:15.5px;}
+  .flow-step span{display:block; font-size:12.5px; color:var(--muted); margin-top:2px;}
+  .arrow{align-self:center; color:var(--green); font-weight:800; font-size:20px;}
+  .hero-meta{margin-top:18px; font-size:13px; color:var(--muted); display:flex; gap:8px 18px; justify-content:center; flex-wrap:wrap;}
+
+  .sec-title{display:flex; align-items:center; gap:9px; font-size:16.5px; font-weight:800; margin:4px 0 12px;}
+  .sec-title .bar{width:4px; height:18px; border-radius:2px; background:linear-gradient(var(--green),var(--teal));}
+  .steps{list-style:none; margin-top:8px; counter-reset:none;}
+  .steps li{display:flex; gap:14px; align-items:flex-start; padding:11px 0;}
+  .steps .no{flex:0 0 auto; width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,var(--green),var(--teal));
+    color:#fff; font-weight:800; display:flex; align-items:center; justify-content:center; font-size:14px; box-shadow:0 4px 10px rgba(5,150,105,.28);}
+  .steps b{font-size:14.5px;}
+  .steps p{font-size:13px; color:var(--muted);}
+  .tips{font-size:13px; color:#475569; margin-top:6px; line-height:1.9;}
+
+  /* ===== 成长画像 ===== */
+  .radar-box{display:flex; gap:20px; align-items:center; flex-wrap:wrap;}
+  .radar-box svg{flex:0 0 auto;}
+  .interpret{flex:1; min-width:240px; font-size:14px;}
+  .interpret .idx{font-size:28px; font-weight:800; color:var(--green);}
+  .interpret .idx small{font-size:13px; font-weight:600; color:var(--muted);}
+  .tags{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;}
+  .tag{font-size:12.5px; padding:5px 12px; border-radius:999px; background:#fff; border:1px solid var(--line); color:#374151;}
+  .suggest{margin-top:16px; padding:14px 16px; border-radius:12px; background:#f0fdf4; border:1px solid #bbf7d0;}
+  .suggest b{color:#065f46; font-size:14px;}
+  .suggest ul{margin:8px 0 0 18px; font-size:13.5px; color:#374151;}
+  .suggest li{margin-bottom:5px;}
+
+  /* ===== 焦虑拆解 ===== */
+  .three-col{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin-top:14px;}
+  .three-col .box{padding:14px; border-radius:12px; font-size:13.5px;}
+  .box.can{background:#eef7f0; border:1px solid #d5ead9;}
+  .box.cannot{background:#fdf0ee; border:1px solid #f3d5cf;}
+  .box.next{background:#eef2ff; border:1px solid #dbe0fb;}
+  .box h4{font-size:13px; margin-bottom:6px;}
+  .reframe{margin-top:14px; padding:14px 16px; border-radius:12px; background:linear-gradient(135deg,#eef7f0,#e7f0ff);
+    border:1px solid #e0e8f0; font-size:14px;}
+  .reframe b{color:var(--green);}
+  .do-tip{margin-top:12px; font-size:13px; color:var(--muted);}
+  .engine-note{font-size:12px; color:#0369a1; background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px; padding:5px 11px; margin-top:8px; display:inline-block;}
+  .next-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;}
+  .next-actions .btn{margin-top:0;}
+  .today-action{margin:12px 0 4px; padding:14px 16px; border-radius:12px; background:#fffbeb; border:1px solid #fde68a;}
+  .today-action .ta-head{font-size:12.5px; font-weight:700; color:#b45309; margin-bottom:4px;}
+  .today-action .ta-body{font-size:14px; color:#374151; margin-bottom:10px;}
+  .today-action .btn{margin-top:0;}
+  .gad7-item{margin-bottom:12px;padding:12px 14px;background:#fff;border:1px solid var(--line);border-radius:12px;}
+  .gad7-q{font-size:14px;font-weight:600;margin-bottom:8px;}
+  .gad7-opts{display:flex;gap:6px 16px;flex-wrap:wrap;}
+  .gad7-opts label{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:500;color:#374151;margin:0;cursor:pointer;}
+  .gad7-opts input{margin:0;}
+  .gad7-score{font-size:15px;color:#1f2937;}
+  .gad7-score b{font-size:20px;color:var(--green);}
+
+  /* ===== 成长计划 ===== */
+  .plan-head{display:flex; align-items:center; gap:12px; font-size:13.5px; color:var(--muted); margin-top:16px;}
+  .plan-head b{color:var(--green); font-size:15px;}
+  .plan-bar{flex:1; height:8px; border-radius:99px; background:#eef2f7; overflow:hidden;}
+  .plan-bar i{display:block; height:100%; width:0; background:linear-gradient(90deg,var(--green),var(--teal)); border-radius:99px; transition:.3s;}
+  .plan-list{list-style:none; margin-top:12px;}
+  .plan-list li{display:flex; gap:12px; align-items:center; padding:12px 14px; border-radius:12px; margin-bottom:8px;
+    background:#fafafa; border:1px solid var(--line); cursor:pointer; user-select:none; transition:.15s;}
+  .plan-list li:hover{border-color:var(--green2);}
+  .plan-list li.done{background:#f0fdf4; border-color:#bbf7d0;}
+  .plan-list li.done .t{color:#059669;}
+  .plan-list .d{flex:0 0 auto; min-width:44px; text-align:center; font-weight:800; color:var(--green);
+    background:#eef7f0; border-radius:10px; padding:6px 4px; font-size:12px; line-height:1.2;}
+  .plan-list li.done .d{background:var(--green); color:#fff;}
+  .plan-list .t{font-size:14px; flex:1;}
+  .plan-list .ck{flex:0 0 auto; font-size:18px; color:#cbd5e1;}
+  .plan-list li.done .ck{color:var(--green);}
+
+  /* ===== 行动打卡 ===== */
+  .streak{display:flex; gap:20px; align-items:center; flex-wrap:wrap; margin-top:8px;}
+  .streak .num{font-size:38px; font-weight:800; background:linear-gradient(90deg,var(--green),var(--teal)); -webkit-background-clip:text; background-clip:text; color:transparent; line-height:1;}
+  .streak .num.small{font-size:26px;}
+  .streak .cap{font-size:12.5px; color:var(--muted);}
+  .calendar{display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:16px;}
+  .calendar .day{aspect-ratio:1; border-radius:10px; border:1px solid var(--line); background:#fafafa;
+    display:flex; align-items:center; justify-content:center; font-size:12.5px; color:var(--muted);}
+  .calendar .day.done{background:linear-gradient(135deg,var(--green),var(--green2)); color:#fff; border-color:transparent; font-weight:700;}
+  .calendar .day.today{outline:2px solid var(--amber); outline-offset:1px;}
+  .cheer{margin-top:14px; font-size:13.5px; color:#065f46; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:10px 14px;}
+
+  footer{margin-top:24px; font-size:12.5px; color:var(--muted); text-align:center;}
+  footer .safe{margin-top:8px; font-size:12px; color:#94a3b8;}
+  footer details{text-align:left; max-width:860px; margin:14px auto 0; background:rgba(255,255,255,.92); border-radius:14px; padding:14px 16px; box-shadow:0 6px 18px rgba(0,0,0,.06);}
+  footer summary{cursor:pointer; font-weight:600; color:#374151; font-size:13px;}
+  footer .api-note{font-size:13px; color:#475569; line-height:1.8; margin-top:8px;}
+  footer .api-note b{color:var(--green);}
+  footer .api-form{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;}
+  footer .api-form input{flex:1; min-width:200px;}
+
+  @media(max-width:520px){
+    .radar-box{justify-content:center;} .streak .num{font-size:32px;} .streak .num.small{font-size:22px;}
+    .hero-title{font-size:30px;} .hero-tag{font-size:16.5px;} nav button{min-width:96px; font-size:13.5px;}
+    .arrow{display:none;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <div class="logo">🌱</div>
+      <div>
+        <h1><em>青芽</em></h1>
+        <div class="sub">青年成长 AI 搭子 · 把焦虑变成行动</div>
+      </div>
+    </div>
+    <div class="badge" id="engineBadge"><span class="dot"></span><span id="engineText">离线可用 · 无需联网</span></div>
+  </header>
+
+  <nav>
+    <button data-p="home" class="on">🏠 首页</button>
+    <button data-p="portrait">🎯 成长画像</button>
+    <button data-p="anxiety">🧠 焦虑拆解</button>
+    <button data-p="plan">📋 成长计划</button>
+    <button data-p="check">✅ 行动打卡</button>
+    <button data-p="gad7">📊 情绪自测</button>
+  </nav>
+
+  <!-- ⓪ 首页 -->
+  <section class="panel on" id="p-home">
+    <div class="card hero">
+      <div class="hero-logo">🌱</div>
+      <div class="hero-title"><em>青芽</em></div>
+      <div class="hero-tag">帮你把「迷茫和焦虑」变成「看得见的行动」</div>
+      <p class="hero-desc">不管你是中文、商科、理工还是艺术专业——写下你的困扰，青芽陪你一步步<strong>认清自己 → 拆解焦虑 → 制定计划 → 坚持打卡</strong>，把想不通的事做成做得到的事。</p>
+      <div class="flow">
+        <div class="flow-step" onclick="switchTab('portrait')"><span class="no">1</span><b>认识自己</b><span>生成能力画像</span></div>
+        <div class="arrow">→</div>
+        <div class="flow-step" onclick="switchTab('anxiety')"><span class="no">2</span><b>拆解焦虑</b><span>情绪变成行动</span></div>
+        <div class="arrow">→</div>
+        <div class="flow-step" onclick="switchTab('plan')"><span class="no">3</span><b>制定计划</b><span>7 天微计划</span></div>
+        <div class="arrow">→</div>
+        <div class="flow-step" onclick="switchTab('check')"><span class="no">4</span><b>坚持打卡</b><span>让坚持可见</span></div>
+      </div>
+      <div class="hero-meta"><span>🎯 免费</span><span>🔒 无需注册</span><span>📶 无需联网</span><span>🫂 危机守护</span><span>🤝 不懂技术也能用</span></div>
+    </div>
+
+    <div class="card">
+      <div class="sec-title"><span class="bar"></span>怎么用（三步）</div>
+      <ol class="steps">
+        <li><span class="no">1</span><div><b>写一写</b><p>在「成长画像」或「焦虑拆解」里，用你的真实情况写下想法。</p></div></li>
+        <li><span class="no">2</span><div><b>跟着做</b><p>按给出的「下一步行动」或「7 天计划」，每天做一个小动作。</p></div></li>
+        <li><span class="no">3</span><div><b>打个卡</b><p>完成就在「行动打卡」点一下，看着坚持一点点累积。</p></div></li>
+      </ol>
+      <p class="tips">💡 所有功能都在本机运行，你的信息只保存在自己浏览器里，不会上传。</p>
+    </div>
+  </section>
+
+  <!-- ① 成长画像 -->
+  <section class="panel" id="p-portrait">
+    <div class="card">
+      <h2>🎯 成长画像</h2>
+      <div class="hint">回答四个问题，「青芽」帮你画出你的能力图谱，并给你几个可以试试的方向。请用真实信息填写。</div>
+      <label>你的专业 / 方向</label>
+      <input type="text" id="f-major" placeholder="例：汉语言文学 / 市场营销 / 计算机 / 数字媒体 / 临床医学">
+      <label>你擅长的事</label>
+      <input type="text" id="f-good" placeholder="例：写作、做设计、数据分析、组织活动、与人沟通">
+      <label>你热爱 / 感兴趣的事</label>
+      <input type="text" id="f-like" placeholder="例：读书、摄影、看展、研究 AI、打篮球、做手工">
+      <label>最近一次让你有成就感的事</label>
+      <input type="text" id="f-win" placeholder="例：写出一篇好文章 / 帮同学讲懂一道题 / 谈成一次合作">
+      <button class="btn" onclick="genPortrait()">✨ 生成我的能力图谱</button>
+      <div class="result" id="portraitResult"></div>
+    </div>
+  </section>
+
+  <!-- ② 焦虑拆解 -->
+  <section class="panel" id="p-anxiety">
+    <div class="card">
+      <h2>🧠 焦虑拆解</h2>
+      <div class="hint">把你最焦虑的那句话写下来，「青芽」帮你把它拆成「可控 / 不可控 / 下一步行动」。</div>
+      <textarea id="anxietyText" placeholder="例：我学的东西 AI 一秒就能做出来，我是不是没用了？ / 我以后到底能做什么？"></textarea>
+      <button class="btn" onclick="genAnxiety()">🧩 拆解我的焦虑</button>
+      <div class="result" id="anxietyResult"></div>
+    </div>
+  </section>
+
+  <!-- ③ 成长计划 -->
+  <section class="panel" id="p-plan">
+    <div class="card">
+      <h2>📋 成长计划</h2>
+      <div class="hint">选一个你想提升的方向，生成一份 7 天可执行的微计划。点一下任务就能标记完成，进度自动保存。</div>
+      <label>成长方向</label>
+      <select id="planDir">
+        <option value="tech">专业硬实力</option>
+        <option value="express">表达与沟通</option>
+        <option value="create">创造与审美</option>
+        <option value="career">职业准备</option>
+        <option value="mind">身心状态</option>
+      </select>
+      <button class="btn" onclick="genPlan()">📅 生成 7 天计划</button>
+      <div class="result" id="planResult"></div>
+    </div>
+  </section>
+
+  <!-- ④ 行动打卡 -->
+  <section class="panel" id="p-check">
+    <div class="card">
+      <h2>✅ 行动打卡</h2>
+      <div class="hint">每天完成一个成长小动作，就点一下。坚持会让你看到复利。</div>
+      <div class="today-action" id="todayAction"></div>
+      <div class="streak">
+        <div><div class="num" id="streakNum">0</div><div class="cap">连续打卡（天）</div></div>
+        <div><div class="num small" id="monthNum">0</div><div class="cap">本月（天）</div></div>
+        <div><div class="num small" id="totalNum">0</div><div class="cap">累计（天）</div></div>
+        <div><button class="btn" onclick="checkin()">✔ 今日打卡</button></div>
+      </div>
+      <div class="calendar" id="calendar"></div>
+      <div class="cheer" id="cheer"></div>
+    </div>
+  </section>
+
+  <!-- ⑤ 情绪自测 -->
+  <section class="panel" id="p-gad7">
+    <div class="card">
+      <h2>📊 情绪自测（GAD-7）</h2>
+      <div class="hint">过去两周你的状态如何？7 道题如实作答，得到一个参考分数。登录后可记录前后测对比。</div>
+      <div id="gad7Form"></div>
+      <button class="btn" onclick="submitGad7()">📊 查看我的分数</button>
+      <div class="result" id="gad7Result"></div>
+      <div id="gad7History" style="margin-top:10px;"></div>
+    </div>
+  </section>
+
+  <footer>
+    <div>「青芽」— 面向全体大学生的成长搭子 · 数绘青春「数智新技艺」参赛作品</div>
+    <div class="safe">🔒 离线模式：你的信息仅保存在本机浏览器，不会上传到任何服务器</div>
+    <details open>
+      <summary>☁️ 服务器与账号（可选，不登录也能用）</summary>
+      <div class="api-note">
+        <p>💡 <b>不登录也能完整使用</b>——双击打开就是「本机离线模式」，四个功能都能用。想「换设备不丢、数据上云、接真实大模型」时，再连服务器并注册账号。</p>
+        <label>服务器地址</label>
+        <div class="api-form">
+          <input type="text" id="serverUrl" placeholder="例如 http://localhost:3000 或你的部署地址">
+          <button class="btn ghost" onclick="saveServer()">连接</button>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+          <input type="text" id="authUser" placeholder="用户名" style="flex:1;min-width:120px;">
+          <input type="password" id="authPass" placeholder="密码（≥6 位）" style="flex:1;min-width:120px;">
+          <button class="btn ghost" onclick="doAuth('login')">登录</button>
+          <button class="btn ghost" onclick="doAuth('register')">注册</button>
+          <button class="btn ghost" onclick="doLogout()">退出</button>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-top:8px;">🔒 数据按账号严格隔离：登录后只在云端保存，退出即回到本机，互不串台。</p>
+      </div>
+    </details>
+    <details>
+      <summary>📁 导出 / 导入我的数据（换设备不丢）</summary>
+      <div class="api-note">
+        <p>青芽的数据存在本机浏览器里，清缓存会丢失。建议定期导出备份，换设备时导入即可恢复。</p>
+        <div class="next-actions">
+          <button class="btn ghost" onclick="exportData()">⬇ 导出数据</button>
+          <label class="btn ghost" style="cursor:pointer;">⬆ 导入数据<input type="file" accept=".json" style="display:none" onchange="importData(this)"></label>
+        </div>
+      </div>
+    </details>
+    <details>
+      <summary>🫂 心理援助（如果你此刻很痛苦）</summary>
+      <div class="api-note">
+        <p>如果你正承受难以承受的痛苦、甚至想过伤害自己，请一定先保证自己的安全，并立刻联系：</p>
+        <ul style="margin:8px 0 0 18px;line-height:2;">
+          <li><b>全国统一心理援助热线：12356</b>（24 小时 · 免费）</li>
+          <li><b>希望 24 热线：400-161-9995</b>（24 小时 · 免费）</li>
+          <li>学校心理中心 / 辅导员，或一位你信任的家人朋友</li>
+        </ul>
+      </div>
+    </details>
+  </footer>
+</div>
+
+<script>
+/* ============ 数据：能力维度与关键词映射 ============ */
+const DIMS = [
+  {key:'define', name:'定义问题的能力', short:'定义问题', base:52},
+  {key:'create', name:'创造与审美',      short:'创造审美', base:52},
+  {key:'empath', name:'协作与共情',      short:'协作共情', base:52},
+  {key:'learn',  name:'学习迁移',        short:'学习迁移', base:52},
+  {key:'drive',  name:'自驱与坚韧',      short:'自驱坚韧', base:52},
+  {key:'tech',   name:'工具运用',        short:'工具运用', base:52},
+];
+const KW = [
+  {d:'tech',  w:['计算机','软件','代码','编程','算法','ai','人工智能','开发','前端','后端','机器学习','数据','信息安全','物联网','硬件','电子','excel','ppt','工具','建模','统计','财务','剪辑','ps']},
+  {d:'create',w:['设计','艺术','美术','绘画','画画','摄影','音乐','剪辑','视频','动漫','插画','配色','排版','创意','文学','写作','审美','鉴赏']},
+  {d:'empath',w:['沟通','表达','写作','演讲','倾听','帮助','心理','教育','组织','团队','协作','讲解','服务','志愿','分享','领导','主持','谈判']},
+  {d:'define',w:['思考','分析','逻辑','解决','规划','研究','问题','调研','判断','决策','抽象','架构','思辨','论证']},
+  {d:'drive', w:['坚持','自律','目标','挑战','攻坚','克服','突破','复盘','计划','运动','习惯','毅力']},
+  {d:'learn', w:['学习','读书','阅读','看展','探索','新东西','自学','课程','笔记','钻研','好奇','求知','跨专业']},
+];
+function scoreDim(text){
+  const t=(text||'').toLowerCase(); const s={};
+  DIMS.forEach(d=>s[d.key]=d.base);
+  KW.forEach(k=>{ if(k.w.some(w=>t.includes(w))) s[k.d]+=20; });
+  Object.keys(s).forEach(k=>{ if(s[k]>96) s[k]=96; });
+  return s;
+}
+
+/* 每个维度对应的「你可以试试」的具体方向 */
+const DIRS = {
+  define:{label:'定义问题', try:['参加一个需要独立思考 / 调研的项目或竞赛','试着把一件复杂的事拆成清晰的步骤，写下来','读一些思辨类内容，练习"提出一个好问题"']},
+  create:{label:'创造与审美', try:['尝试做新媒体内容（图文 / 视频 / 设计）','加入一个创作类社团，或临摹你喜欢的作品','用 AI 辅助做一套自己的小作品集']},
+  empath:{label:'协作与共情', try:['参与学生工作或志愿活动','试着当一次小组 / 项目的负责人','练习倾听与表达（读书会、辩论、主持）']},
+  drive: {label:'自驱与坚韧', try:['给自己定一个 21 天的小习惯并坚持','参加一次有挑战的比赛或任务','用「行动打卡」记录每天的小坚持']},
+  learn: {label:'学习迁移', try:['跨专业旁听一门你感兴趣的课','把一门你懂的知识讲给外行人听','自学一个新技能，并做一份笔记']},
+  tech:  {label:'工具运用', try:['用 AI / Excel / PS 等工具完成一个小任务','学一个能帮你提效的软件或工具','做一个可展示的小作品或小项目']},
+};
+
+/* ============ Tab 切换 ============ */
+function switchTab(p){
+  const btn=document.querySelector('nav button[data-p="'+p+'"]');
+  if(btn) btn.click();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ============ ① 成长画像 ============ */
+function localPortrait(major,good,like,win){
+  const fields=[major,good,like,win].filter(Boolean);
+  const s={}; DIMS.forEach(d=>s[d.key]=d.base);
+  fields.forEach(txt=>{
+    const part=scoreDim(txt);
+    DIMS.forEach(d=>{ s[d.key]=Math.min(96, s[d.key]+Math.round((part[d.key]-d.base)*0.6)); });
+  });
+  const streak=calcStreak();
+  let driveNote='';
+  if(streak>=7){ s.drive=Math.min(96,s.drive+6); driveNote=`已连续打卡 ${streak} 天，自驱与坚韧 +6`; }
+  else if(streak>=3){ s.drive=Math.min(96,s.drive+3); driveNote=`已连续打卡 ${streak} 天，自驱与坚韧 +3`; }
+  const vals=DIMS.map(d=>Math.round(s[d.key]));
+  const human=['define','create','empath','drive'];
+  const idx=Math.round(human.reduce((a,k)=>a+s[k],0)/human.length);
+  const dims=DIMS.map((d,i)=>({key:d.key,name:d.name,value:vals[i]}));
+  const ranked=[...dims].sort((a,b)=>b.value-a.value);
+  const top=ranked.slice(0,2);
+  return {
+    idx, dims,
+    strong: top.map(t=>t.name).join(' 与 '),
+    topLabel: DIRS[top[0].key].label,
+    topKey: top[0].key,
+    secondLabel: top[1].name,
+    suggest: DIRS[top[0].key],
+    driveNote, aiSug: [], source: 'rule',
+  };
+}
+async function genPortrait(){
+  const major=document.getElementById('f-major').value.trim();
+  const good=document.getElementById('f-good').value.trim();
+  const like=document.getElementById('f-like').value.trim();
+  const win=document.getElementById('f-win').value.trim();
+  if(!major&&!good&&!like&&!win){ alert('请至少填写一项真实信息'); return; }
+  const el=document.getElementById('portraitResult');
+  if(serverOn()){
+    try{
+      renderPortraitResult(await api('/api/portrait',{method:'POST',body:{major,good,like,win}}));
+      el.classList.add('show'); return;
+    }catch(e){ /* 服务器不可用 → 回退本地 */ }
+  }
+  renderPortraitResult(localPortrait(major,good,like,win));
+  el.classList.add('show');
+}
+function renderPortraitResult(r){
+  const el=document.getElementById('portraitResult');
+  const vals=(r.dims||[]).map(d=>d.value);
+  const suggest=r.suggest||DIRS[r.topKey]||{label:'成长',try:[]};
+  currentTopDim=r.topKey||'tech';
+  el.innerHTML=`
+    <div class="radar-box">
+      ${vals.length?radarSVG(vals):''}
+      <div class="interpret">
+        <div class="idx">${r.idx}<small> / 100 · 你的「不可替代指数」</small></div>
+        <p style="margin-top:8px;">你的核心优势是 <b style="color:var(--green)">${r.strong||''}</b>。这些正是 AI 替代不了的部分——想清楚问题、创造、共情与坚持。</p>
+        <div class="tags">
+          <span class="tag">🖌 建议深耕：${r.topLabel||''}</span>
+          <span class="tag">🌱 可用 AI 放大：${r.secondLabel||''}</span>
+        </div>
+        ${r.driveNote?`<div class="engine-note">📊 ${r.driveNote}（打卡数据已反哺画像）</div>`:''}
+      </div>
+    </div>
+    <div class="suggest">
+      <b>💡 基于「${suggest.label}」，你可以试试：</b>
+      <ul>${(suggest.try||[]).map(t=>`<li>${t}</li>`).join('')}</ul>
+      ${(r.aiSug&&r.aiSug.length)?`<div style="margin-top:10px;padding-top:10px;border-top:1px dashed #cbd5e1;"><b style="color:#0ea5e9;">✨ AI 个性化建议：</b><ul>${r.aiSug.map(t=>`<li>${t}</li>`).join('')}</ul></div>`:''}
+    </div>
+    <div class="next-actions">
+      <button class="btn" onclick="goPlanFromPortrait()">📋 基于「${suggest.label}」生成 7 天计划</button>
+    </div>`;
+}
+
+function radarSVG(vals){
+  const c=150, r=100, n=DIMS.length;
+  let grid='', labels='';
+  for(let ring=1; ring<=4; ring++){
+    const rr=r*ring/4; let pts=DIMS.map((d,i)=>{
+      const a=-Math.PI/2 + i*2*Math.PI/n;
+      return (c+rr*Math.cos(a)).toFixed(1)+','+(c+rr*Math.sin(a)).toFixed(1);
+    }).join(' ');
+    grid+=`<polygon points="${pts}" fill="none" stroke="#e5e7eb" stroke-width="1"/>`;
+  }
+  for(let i=0;i<n;i++){
+    const a=-Math.PI/2 + i*2*Math.PI/n;
+    const x2=c+r*Math.cos(a), y2=c+r*Math.sin(a);
+    grid+=`<line x1="${c}" y1="${c}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#e5e7eb" stroke-width="1"/>`;
+    const lx=c+(r+24)*Math.cos(a), ly=c+(r+24)*Math.sin(a);
+    labels+=`<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" font-size="11" fill="#6b7280" text-anchor="middle" dominant-baseline="middle">${DIMS[i].short}</text>`;
+  }
+  const pts=vals.map((v,i)=>{ const a=-Math.PI/2+i*2*Math.PI/n; const rr=r*v/100;
+    return (c+rr*Math.cos(a)).toFixed(1)+','+(c+rr*Math.sin(a)).toFixed(1);}).join(' ');
+  return `<svg width="300" height="300" viewBox="0 0 300 300">${grid}
+    <polygon points="${pts}" fill="rgba(16,185,129,.26)" stroke="#059669" stroke-width="2.5"/>
+    ${vals.map((v,i)=>{const a=-Math.PI/2+i*2*Math.PI/n;const rr=r*v/100;
+      const x=c+rr*Math.cos(a), y=c+rr*Math.sin(a);
+      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.5" fill="#059669"/>`;}).join('')}
+    ${labels}</svg>`;
+}
+
+/* ============ ② 焦虑拆解 ============ */
+/* 危机识别与心理援助（安全护栏，离线也生效） */
+const CRISIS_KW=['自杀','自残','轻生','想死','不想活','活不下去','结束生命','结束自己','伤害自己','割腕','跳楼','安眠药','消失算了','解脱','撑不下去','想不开','了结','活着没意思','不想存在','死亡'];
+const HOTLINE=[
+  {name:'全国统一心理援助热线', tel:'12356', note:'24 小时 · 免费'},
+  {name:'希望 24 热线', tel:'400-161-9995', note:'24 小时 · 免费'},
+  {name:'北京心理危机研究与干预中心', tel:'010-82951332', note:'24 小时 · 免费'},
+];
+function isCrisis(txt){
+  const t=(txt||'').toLowerCase();
+  return CRISIS_KW.some(w=>t.includes(w));
+}
+function crisisHTML(){
+  return `
+    <div style="background:#fdf0ee;border:1px solid #f3d5cf;border-radius:12px;padding:16px;">
+      <div style="font-size:15px;font-weight:700;color:#b91c1c;margin-bottom:8px;">🫂 你现在很辛苦，先停下来抱抱自己</div>
+      <p style="font-size:13.5px;color:#7f1d1d;line-height:1.85;">如果你正承受难以承受的痛苦，甚至想过伤害自己——这不是你的错，也请你一定先保证自己的安全。你值得被认真对待，也一定有人愿意陪你走过这一段。</p>
+    </div>
+    <div style="margin-top:12px;padding:16px;background:#fff;border:1px solid var(--line);border-radius:12px;">
+      <b style="color:#b91c1c;">📞 请立刻联系专业援助（免费、保密）：</b>
+      <ul style="margin:10px 0 0 18px;font-size:14px;line-height:2.1;">
+        ${HOTLINE.map(h=>`<li><b>${h.name}</b>：${h.tel}（${h.note}）</li>`).join('')}
+      </ul>
+      <p style="margin-top:10px;font-size:13px;color:var(--muted);">🏫 也请联系你所在学校的心理中心或辅导员，或告诉一位你信任的家人 / 朋友。此刻你不需要一个人扛。</p>
+    </div>
+    <p style="margin-top:12px;font-size:13px;color:var(--muted);">💚 青芽会一直在这里陪你。危机时刻请优先寻求专业帮助，这比任何工具都重要。</p>`;
+}
+const ANX=[
+  {k:['替代','淘汰','没用','没价值','ai','失业','机器','取代','被比下去','没意义'],
+   reframe:'AI 替代的是"模板化、可重复"的那部分工作，而不是"想清楚要做什么、为什么要做"的你。你的价值，恰恰在 AI 能力之外。',
+   can:'你能控制的：你如何用 AI 这件事。是把它当竞争对手，还是当你的"外挂"。今天就可以开始用 AI 放大你的优势，而不是与它赛跑。',
+   cannot:'你无法控制的：AI 的进化速度、行业的变化节奏。为此焦虑不会改变任何事，只会消耗你本可以用来成长的精力。',
+   next:'下一步行动：列出 3 件"AI 替我做不了、或做得没我好"的事（你的判断、你的审美、你与人的连接），把它们练成你的招牌。'},
+  {k:['绩点','考试','挂科','考研','保研','学业','作业','论文','成绩','复习'],
+   reframe:'成绩衡量的是你"某一阶段"的知识掌握，而不是你"这个人"的全部价值。学业是赛道之一，不是唯一的坐标系。',
+   can:'你能控制的：接下来的复习节奏、学习方法的调整、向老师同学求助的主动性。',
+   cannot:'你无法控制的：考题难度、别人的排名、往年的分数线。',
+   next:'下一步行动：把最焦虑的一门课拆成 3 个具体知识点，今天只啃透一个，用"完成感"替代"恐慌感"。'},
+  {k:['就业','工作','实习','面试','简历','offer','找工作','毕业','收入','职场'],
+   reframe:'焦虑的本质是"还没准备好"，而准备是可以通过行动补齐的。你现在不是没有出路，只是还没开始铺路。',
+   can:'你能控制的：简历的质量、投递的数量、面试的复盘、技能的补强。',
+   cannot:'你无法控制的：公司招不招人、面试官的个人偏好、经济大环境。',
+   next:'下一步行动：今天投出/完善 1 份简历，约 1 个学长学姐聊聊行业真实情况，把"想象出来的恐惧"换成"真实的信息"。'},
+  {k:['迷茫','不知道','方向','未来','没目标','浑浑噩噩','没意思','适合什么','能做什么'],
+   reframe:'迷茫不是缺点，而是你正在"认真思考自己"的证据。真正的问题不是没有方向，而是站在原地等方向自己出现。',
+   can:'你能控制的：去尝试、去体验、去排除"我不喜欢什么"，用低成本试错逼近答案。',
+   cannot:'你无法控制的：一步到位找到"完美答案"。几乎没有人能做到，多数人都是在路上才看清的。',
+   next:'下一步行动：本周去体验一件没做过的事（一次社团、一门课、一个项目），并记下"我喜欢/不喜欢它的哪里"。'},
+  {k:['社交','孤独','人际','朋友','室友','不合群','内向','尴尬','社恐'],
+   reframe:'深度关系从来不是"合群"换来的，而是"做真实的自己"吸引来的。内向不是缺陷，只是你的能量获取方式不同。',
+   can:'你能控制的：主动迈出的一小步——一句招呼、一次组队、一次分享。',
+   cannot:'你无法控制的：别人是否回应、是否喜欢你。',
+   next:'下一步行动：今天对想认识的人说一句具体的话（"你上次说的那个方法我想试试"），从具体话题切入，比尬聊更自然。'},
+  {k:['专业','调剂','不喜欢','学不会','转专业','课程难','选错'],
+   reframe:'专业只是你探索世界的一个入口，不是人生的终审判决。很多人真正的热爱，是在"边学边试"里才浮出水面的。',
+   can:'你能控制的：如何把眼前的专业课学好一点、如何主动去旁听/自学感兴趣的方向。',
+   cannot:'你无法控制的：当初的选择、家人的期待、专业的热门与否。',
+   next:'下一步行动：写下"这个专业里我真正喜欢/讨厌的 2 个点"，再列 1 个"想试试但还没试"的方向，本周迈出一小步。'},
+  {k:['别人','同龄人','内卷','卷','比较','比不上','落后','差劲','优秀','比不过'],
+   reframe:'你焦虑的不是"不够好"，而是"在错误的坐标系里和所有人比"。成长是复利，不是同一条跑道上的短跑。',
+   can:'你能控制的：你今天的节奏、你选择投入的方向、你对自己的认可。',
+   cannot:'你无法控制的：别人的起点、进度、高光时刻。',
+   next:'下一步行动：关掉对比，写下"相比上个月，我哪一点进步了"，再为下个月定一个只属于自己的小目标。'},
+];
+const ANX_DEFAULT={
+  reframe:'焦虑是身体在提醒你"这件事对我很重要"。与其抗拒它，不如把它当成一条线索——它指向的，正是你该去行动的地方。',
+  can:'你能控制的：你对这件事的态度、你今天能迈出的一小步。',
+  cannot:'你无法控制的：事情最终的结果、他人的评价、外界的变数。',
+  next:'下一步行动：把焦虑写下来，问自己"其中最让我害怕的一点是什么"，然后为它设计一个最小动作，今天就做。'
+};
+function localAnxiety(raw){
+  const t=raw.toLowerCase();
+  for(const a of ANX){ if(a.k.some(w=>t.includes(w))) return {...a, source:'rule'}; }
+  return {...ANX_DEFAULT, source:'rule'};
+}
+function renderAnxietyResult(r){
+  const el=document.getElementById('anxietyResult');
+  currentNextAction=r.next;
+  el.innerHTML=`
+    ${r.source==='ai'?'<div class="engine-note">✨ 本条由 AI 在线生成，更贴合你的情况</div>':''}
+    <div class="reframe">💡 <b>换一个视角：</b>${r.reframe}</div>
+    <div class="three-col">
+      <div class="box can"><h4>✅ 你能控制的</h4>${r.can}</div>
+      <div class="box cannot"><h4>❌ 你无法控制的</h4>${r.cannot}</div>
+      <div class="box next"><h4>🚀 下一步行动</h4>${r.next}</div>
+    </div>
+    <div class="next-actions">
+      <button class="btn" onclick="setTodayAction()">✅ 把「下一步」设为今日小目标，开始行动</button>
+    </div>
+    <p class="do-tip">📌 设为小目标后，去「行动打卡」完成它，闭环就形成了。</p>`;
+}
+async function genAnxiety(){
+  const raw=document.getElementById('anxietyText').value.trim();
+  if(!raw){ alert('请先写下让你焦虑的那句话'); return; }
+  const el=document.getElementById('anxietyResult');
+
+  // ① 危机优先（本地识别，离线也生效）
+  if(isCrisis(raw.toLowerCase())){ el.innerHTML=crisisHTML(); el.classList.add('show'); return; }
+
+  // ② 有服务器 → 交给后端（后端再做一次危机识别 + 真 AI + 兜底）
+  if(serverOn()){
+    try{
+      const r=await api('/api/anxiety',{method:'POST',body:{text:raw}});
+      if(r.crisis){ el.innerHTML=crisisHTML(); }
+      else renderAnxietyResult(r);
+      el.classList.add('show'); return;
+    }catch(e){ /* 服务器不可用 → 回退本地 */ }
+  }
+
+  // ③ 本地规则引擎（离线兜底）
+  renderAnxietyResult(localAnxiety(raw));
+  el.classList.add('show');
+}
+
+/* ============ ③ 成长计划 ============ */
+const PLANS={
+  tech:['选一个你专业里最想提升的小技能，用 AI 工具辅助做一遍，记录用时与心得','拆解一个你一直没搞懂的专业知识点，写 300 字笔记讲给自己','完成一个专业小练习 / 小作品（哪怕很糙），先跑通完整流程','用 AI 当陪练：做一道题 / 整理一页总结，再自己复述一遍思路','读一篇你专业方向的前沿文章或资讯，提炼 3 个关键词','把本周学到的东西，用 5 分钟讲给同学听（费曼学习法）','复盘：写一份"我这 7 天提升了什么 + 下周目标"'],
+  express:['把今天最想表达的一个观点，写成 100 字小短文','主动在群里 / 课上做一次 30 秒发言','把一件复杂的事，用"给小白讲"的方式解释给朋友','观察一个你认为表达好的人，记下 TA 的一个技巧','录一段 1 分钟即兴表达，回听并改一个毛病','参加一次讨论 / 组会，提出一个具体问题','复盘：写"我的表达哪里进步了 + 下周练什么"'],
+  create:['搜集 5 个你喜欢的作品，写一句话说明"我喜欢它哪里"','临摹 / 仿作一个小作品，只练技法不追求完美','用 AI 工具辅助生成一个创意初稿，再人工改到满意','给你的作品定一个主题，做一版"丑但完整"的初稿','学习一个新技法（一个配色方案 / 一种构图），当天用一次','把本周作品发出来，收一条真实反馈','复盘：写"我的审美判断有什么变化"'],
+  career:['写一版简历，请一位学长 / 老师提意见','调研 3 个你感兴趣的岗位，各记一句"它到底要什么"','主动约 1 个人做 10 分钟行业 / 职业访谈','把你的项目 / 作品整理成一个可展示的链接或文档','模拟一次面试自我介绍（30 秒 + 2 分钟两版）','补强一个目标岗位要求、但你还不熟的技能点','复盘：写"我离目标岗位还差什么 + 下一步"'],
+  mind:['早起 / 睡前做 5 分钟"三件好事"记录（今天什么让我感觉好）','运动 20 分钟，任何形式都行','睡前 30 分钟不看手机，改读 / 写','给自己安排 1 小时无目的的放松，不内疚','整理房间或书桌一角，清空一个干扰源','和信任的人认真聊一次近况，说真话','复盘：写"这周我照顾好自己的 3 个瞬间"'],
+};
+function loadPlanDone(){ try{ return JSON.parse(localStorage.getItem('qingya_plan'))||{}; }catch(e){ return {}; } }
+function savePlanDone(o){ localStorage.setItem('qingya_plan', JSON.stringify(o)); }
+function myPlanDone(){ return isAccount() ? S.planDone : loadPlanDone(); }
+function genPlan(){ renderPlan(document.getElementById('planDir').value); }
+async function togglePlan(dir, i){
+  if(isAccount()){
+    try{
+      await api('/api/plan',{method:'POST',body:{dir, index:i}});
+      S.planDone=(await api('/api/plan')).done;
+    }catch(e){ alert('同步失败：'+e.message); }
+  } else {
+    const o=loadPlanDone(); const arr=o[dir]||[]; const idx=arr.indexOf(i);
+    if(idx>=0) arr.splice(idx,1); else arr.push(i);
+    o[dir]=arr; savePlanDone(o);
+  }
+  renderPlan(dir);
+}
+function renderPlan(dir){
+  const items=PLANS[dir];
+  const done=new Set(myPlanDone()[dir]||[]);
+  const pct=Math.round(done.size/items.length*100);
+  const el=document.getElementById('planResult');
+  el.innerHTML=`
+    <div class="plan-head"><span>已完成 <b>${done.size}</b> / ${items.length}</span>
+      <div class="plan-bar"><i style="width:${pct}%"></i></div></div>
+    <ul class="plan-list">${items.map((t,i)=>`
+      <li class="${done.has(i)?'done':''}" onclick="togglePlan('${dir}',${i})">
+        <div class="d">Day<br>${i+1}</div><div class="t">${t}</div><div class="ck">${done.has(i)?'✓':'○'}</div>
+      </li>`).join('')}</ul>
+    <p style="font-size:12.5px;color:var(--muted);margin-top:8px;">💡 点一下任务即可标记完成（${isAccount()?'云端保存':'保存在本机'}）；每天完成一件，也去「行动打卡」点一下。</p>`;
+  el.classList.add('show');
+}
+
+/* ============ ④ 行动打卡 ============ */
+const KEY='qingya_checks';
+function loadChecks(){ try{ return JSON.parse(localStorage.getItem(KEY))||[]; }catch(e){ return []; } }
+function saveChecks(a){ localStorage.setItem(KEY, JSON.stringify(a)); }
+function todayStr(){ const d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+function myChecks(){ return isAccount() ? S.checks : loadChecks(); }
+async function checkin(){
+  const t=todayStr();
+  if(isAccount()){
+    try{ const r=await api('/api/checkins',{method:'POST',body:{date:t}}); S.checks=r.dates; }
+    catch(e){ alert('同步失败：'+e.message); }
+  } else {
+    const a=loadChecks(); if(!a.includes(t)){ a.push(t); saveChecks(a); }
+  }
+  renderCheck();
+}
+function calcStreak(){
+  const a=myChecks(); const d=new Date(); let streak=0;
+  while(a.includes(d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate())){ streak++; d.setDate(d.getDate()-1); }
+  return streak;
+}
+function renderTodayAction(){
+  const el=document.getElementById('todayAction');
+  let t=''; try{ t=localStorage.getItem('qingya_today_action')||''; }catch(e){}
+  if(!t){ el.innerHTML=''; return; }
+  el.innerHTML=`<div class="ta-head">🎯 今天的小目标（来自「焦虑拆解」）</div>
+    <div class="ta-body">${t}</div>
+    <button class="btn ghost" onclick="completeTodayAction()">✔ 我做到了</button>`;
+}
+async function completeTodayAction(){
+  await checkin();
+  try{ localStorage.removeItem('qingya_today_action'); }catch(e){}
+  renderTodayAction();
+}
+function renderCheck(){
+  const a=myChecks(); const t=todayStr();
+  const streak=calcStreak();
+  const y=new Date().getFullYear(), m=new Date().getMonth();
+  const monthPrefix=y+'-'+(m+1)+'-';
+  const monthDays=a.filter(x=>x.startsWith(monthPrefix)).length;
+  const total=a.length;
+  document.getElementById('streakNum').textContent=streak;
+  document.getElementById('monthNum').textContent=monthDays;
+  document.getElementById('totalNum').textContent=total;
+  const cheer=document.getElementById('cheer');
+  if(total===0){ cheer.textContent='🌱 万事开头难，从今天的第一个小动作开始吧。'; }
+  else if(streak>=7){ cheer.textContent='🎉 已经连续坚持 '+streak+' 天，习惯正在慢慢长成你的能力！'; }
+  else if(streak>=3){ cheer.textContent='💪 连续 '+streak+' 天，继续保持，复利正在累积。'; }
+  else { cheer.textContent='✅ 已经迈出第一步，今天也给自己点个赞吧。'; }
+  const now=new Date(); const first=new Date(now.getFullYear(),now.getMonth(),1).getDay();
+  const days=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
+  let html='';
+  for(let i=0;i<first;i++) html+='<div class="day"></div>';
+  for(let dd=1; dd<=days; dd++){
+    const ds=now.getFullYear()+'-'+(now.getMonth()+1)+'-'+dd;
+    const done=a.includes(ds); const isToday=ds===t;
+    html+=`<div class="day ${done?'done':''} ${isToday?'today':''}">${done?'✓':dd}</div>`;
+  }
+  document.getElementById('calendar').innerHTML=html;
+}
+
+/* ============ 服务器连接 + 账号（可选登录，离线优先，数据严格隔离） ============ */
+let SVR = localStorage.getItem('qingya_server')||'';
+let TOKEN = localStorage.getItem('qingya_token')||'';
+let UNAME = localStorage.getItem('qingya_user')||'';
+let SVR_UP = false;      // 服务器是否可达
+let SVR_ONLINE = false;  // 服务器是否接了真 AI
+let S = { checks:[], planDone:{}, gad7:[] }; // 账号模式的内存数据（绝不写 localStorage）
+
+function serverOn(){ return !!SVR; }
+function isAccount(){ return !!TOKEN && !!SVR; }
+function apiBase(){ return SVR.replace(/\/+$/,''); }
+
+async function api(path, opts={}){
+  const headers = {};
+  if(opts.body) headers['Content-Type']='application/json';
+  if(TOKEN) headers['Authorization']='Bearer '+TOKEN;
+  const res = await fetch(apiBase()+path, {method:opts.method||'GET', headers, body: opts.body?JSON.stringify(opts.body):undefined});
+  const data = await res.json().catch(()=>({}));
+  if(!res.ok) throw new Error(data.error || ('HTTP '+res.status));
+  return data;
+}
+
+async function refreshStatus(){
+  if(!serverOn()){ SVR_UP=false; SVR_ONLINE=false; }
+  else { try{ const h=await api('/api/health'); SVR_UP=true; SVR_ONLINE=!!h.online; }catch(e){ SVR_UP=false; SVR_ONLINE=false; } }
+  updateStatus();
+}
+function updateStatus(){
+  const txt=document.getElementById('engineText');
+  const dot=document.getElementById('engineBadge').querySelector('.dot');
+  if(isAccount()){ txt.textContent = SVR_UP ? ('云端同步 · '+UNAME) : '云端模式 · 服务器不可达'; dot.style.background='var(--amber)'; }
+  else if(serverOn()){ txt.textContent = SVR_UP ? (SVR_ONLINE?'在线增强 · 免登录':'已连服务器 · 免登录') : '服务器不可达 · 已回本机'; dot.style.background='var(--green2)'; }
+  else { txt.textContent='本机模式 · 离线可用'; dot.style.background='var(--green2)'; }
+}
+
+function saveServer(){
+  const v=document.getElementById('serverUrl').value.trim().replace(/\/+$/,'');
+  SVR=v;
+  if(v) localStorage.setItem('qingya_server',v); else localStorage.removeItem('qingya_server');
+  if(!v){
+    TOKEN=''; UNAME='';
+    localStorage.removeItem('qingya_token'); localStorage.removeItem('qingya_user');
+    S={checks:[],planDone:{},gad7:[]};
+    clearResults(); renderCheck(); renderTodayAction();
+    alert('已恢复本机离线模式。');
+  } else {
+    alert('服务器地址已保存：现在可注册/登录同步数据（不登录也能正常用）。');
+  }
+  refreshStatus();
+}
+
+async function doAuth(mode){
+  const u=document.getElementById('authUser').value.trim();
+  const p=document.getElementById('authPass').value;
+  if(!u||!p){ alert('请填写用户名和密码'); return; }
+  if(!serverOn()){ alert('请先填写并连接服务器地址'); return; }
+  try{
+    const r=await api('/api/'+mode, {method:'POST', body:{username:u, password:p}});
+    TOKEN=r.token; UNAME=r.username;
+    localStorage.setItem('qingya_token',TOKEN); localStorage.setItem('qingya_user',UNAME);
+    S={checks:[],planDone:{},gad7:[]};          // 清空内存，杜绝串台
+    try{ localStorage.removeItem('qingya_today_action'); }catch(e){}
+    await pullAccount();
+    await refreshStatus();
+    clearResults();
+    renderCheck(); renderTodayAction(); renderGad7History();
+    alert((mode==='register'?'注册':'登录')+'成功，数据已切换到云端「'+UNAME+'」');
+  }catch(e){ alert((mode==='register'?'注册':'登录')+'失败：'+e.message); }
+}
+
+async function pullAccount(){
+  const [ck,pl,g]=await Promise.all([api('/api/checkins'), api('/api/plan'), api('/api/gad7')]);
+  S.checks=ck.dates||[]; S.planDone=pl.done||{}; S.gad7=g.history||[];
+}
+
+function doLogout(){
+  TOKEN=''; UNAME='';
+  localStorage.removeItem('qingya_token'); localStorage.removeItem('qingya_user');
+  S={checks:[],planDone:{},gad7:[]};
+  try{ localStorage.removeItem('qingya_today_action'); }catch(e){}
+  updateStatus();
+  clearResults();
+  renderCheck(); renderTodayAction(); renderGad7History();
+  alert('已退出登录，回到本机离线模式（你的云端数据仍安全保存在服务器）');
+}
+
+function clearResults(){
+  ['portraitResult','anxietyResult','planResult'].forEach(id=>{const e=document.getElementById(id); if(e){e.classList.remove('show'); e.innerHTML='';}});
+}
+
+/* ============ 数据贯通（闭环）：画像→计划、焦虑→打卡、打卡→画像 ============ */
+let currentTopDim='tech';
+let currentNextAction='';
+function goPlanFromPortrait(){
+  const map={tech:'tech',create:'create',empath:'express',drive:'mind',learn:'tech',define:'career'};
+  const dir=map[currentTopDim]||'tech';
+  const sel=document.getElementById('planDir');
+  if(sel) sel.value=dir;
+  switchTab('plan');
+  genPlan();
+}
+function setTodayAction(){
+  if(!currentNextAction) return;
+  try{ localStorage.setItem('qingya_today_action', currentNextAction); }catch(e){}
+  renderTodayAction();
+  switchTab('check');
+}
+
+/* ============ GAD-7 情绪自测 ============ */
+const GAD7_Q=['感到紧张、焦虑或急切','不能停止或控制担忧','对各种各样的事情担忧过多','很难放松下来','由于不安而无法静坐','变得容易烦恼或急躁','感到似乎将有可怕的事情发生而害怕'];
+const GAD7_OPT=['完全没有','有几天','一半以上时间','几乎每天'];
+function gad7Interpret(score){
+  let level, advice;
+  if(score<=4){ level='正常'; advice='你的焦虑水平在正常范围内，继续保持规律作息与运动。'; }
+  else if(score<=9){ level='轻度焦虑'; advice='有轻度焦虑，可以试试青芽的「焦虑拆解」和「行动打卡」，规律作息、适度运动会有帮助。'; }
+  else if(score<=14){ level='中度焦虑'; advice='建议使用「焦虑拆解」与「7 天计划」，并考虑和学校心理中心聊一聊。'; }
+  else { level='重度焦虑'; advice='建议尽快联系学校心理中心或辅导员，或拨打心理援助热线 12356（24 小时 · 免费）。'; }
+  return { score, level, advice, suggestHelp: score>=10 };
+}
+function renderGad7Form(){
+  const el=document.getElementById('gad7Form');
+  el.innerHTML=GAD7_Q.map((q,i)=>`
+    <div class="gad7-item"><div class="gad7-q">${i+1}. ${q}</div>
+      <div class="gad7-opts">${GAD7_OPT.map((o,v)=>`
+        <label><input type="radio" name="gad7_${i}" value="${v}"> ${o}</label>`).join('')}
+      </div></div>`).join('');
+}
+async function submitGad7(){
+  const answers=[];
+  for(let i=0;i<7;i++){
+    const sel=document.querySelector('input[name="gad7_'+i+'"]:checked');
+    if(!sel){ alert('请完整填写 7 题'); return; }
+    answers.push(Number(sel.value));
+  }
+  let r;
+  if(isAccount()){
+    try{ r=await api('/api/gad7',{method:'POST',body:{answers}}); }
+    catch(e){ alert('提交失败：'+e.message); return; }
+    renderGad7History();
+  } else {
+    r=gad7Interpret(answers.reduce((a,b)=>a+b,0));
+  }
+  const el=document.getElementById('gad7Result');
+  el.innerHTML=`<div class="gad7-score">得分：<b>${r.score}</b> / 21 · ${r.level}</div>
+    <p style="font-size:13.5px;color:#374151;margin-top:6px;">${r.advice}</p>
+    ${r.suggestHelp?'<div class="engine-note" style="margin-top:8px;">🫂 分数偏高，建议寻求专业支持：学校心理中心 / 心理援助热线 12356</div>':''}`;
+  el.classList.add('show');
+}
+function renderGad7History(){
+  const el=document.getElementById('gad7History');
+  if(!el) return;
+  if(!isAccount() || !S.gad7.length){ el.innerHTML=''; return; }
+  el.innerHTML=`<div style="font-size:12.5px;color:var(--muted);">📈 历史记录（可做前后测对比）：${S.gad7.map(x=>x.created_at.slice(0,10)+' 得 '+x.score+' 分').join(' · ')}</div>`;
+}
+
+/* ============ 数据导出 / 导入 ============ */
+async function exportData(){
+  let obj;
+  if(isAccount()){
+    try{ obj=await api('/api/export'); }catch(e){ alert('导出失败：'+e.message); return; }
+  } else {
+    obj={checks:loadChecks(), plan:loadPlanDone(), today:localStorage.getItem('qingya_today_action')||''};
+  }
+  const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='青芽-我的数据.json'; a.click();
+  URL.revokeObjectURL(url);
+}
+function importData(input){
+  if(isAccount()){ alert('云端模式下数据自动同步，无需导入；如需导入本机数据，请先退出登录'); return; }
+  const f=input.files&&input.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{ try{
+    const d=JSON.parse(r.result);
+    if(d.checks) saveChecks(d.checks);
+    if(d.plan) savePlanDone(d.plan);
+    if(d.today) localStorage.setItem('qingya_today_action', d.today);
+    renderCheck(); renderTodayAction(); alert('数据已导入 ✓');
+  }catch(e){ alert('导入失败：文件格式不正确'); } };
+  r.readAsText(f);
+}
+
+/* ============ Tab 切换绑定 ============ */
+document.querySelectorAll('nav button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('nav button').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    document.getElementById('p-'+b.dataset.p).classList.add('on');
+  });
+});
+
+/* 初始化 */
+(async function init(){
+  renderGad7Form();
+  // 自动探测：页面从 http(s) 打开时，尝试把当前网址当作后端（file:// 则保持离线）
+  if(!SVR && location.protocol.startsWith('http')){
+    try{
+      const r=await fetch(location.origin+'/api/health');
+      if(r.ok){ const h=await r.json(); if(h && h.name==='青芽后端'){ SVR=location.origin; localStorage.setItem('qingya_server',SVR); } }
+    }catch(e){}
+  }
+  const su=document.getElementById('serverUrl'); if(su) su.value=SVR;
+  if(TOKEN && SVR){
+    try{ await pullAccount(); }catch(e){ /* 服务器不可达/令牌失效：仍按云端空数据显示，不串台 */ }
+  }
+  renderCheck();
+  renderTodayAction();
+  renderGad7History();
+  await refreshStatus();
+})();
+</script>
+</body>
+</html>
