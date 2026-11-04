@@ -1,0 +1,17 @@
+{
+  "name": "qingya-server",
+  "version": "1.0.0",
+  "description": "青芽 · 青年成长 AI 搭子 后端（真实 AI 代理 + 账号 + 数据库 + 危机守护 + GAD-7）",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=22.5"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
