@@ -161,6 +161,9 @@
   .plan-list .t{font-size:14px; flex:1;}
   .plan-list .ck{flex:0 0 auto; font-size:18px; color:#cbd5e1;}
   .plan-list li.done .ck{color:var(--green);}
+  .plan-list .del{flex:0 0 auto; width:24px; height:24px; border-radius:50%; border:none; cursor:pointer;
+    background:#f1f5f9; color:#94a3b8; font-size:14px; line-height:1; padding:0; font-family:inherit;}
+  .plan-list .del:hover{background:#fee2e2; color:#ef4444;}
 
   /* ===== 行动打卡 ===== */
   .streak{display:flex; gap:20px; align-items:center; flex-wrap:wrap; margin-top:8px;}
@@ -183,10 +186,158 @@
   footer .api-form{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;}
   footer .api-form input{flex:1; min-width:200px;}
 
+  /* ===== 同伴模块 ===== */
+  .live-strip{display:flex; gap:6px 16px; justify-content:center; flex-wrap:wrap; margin-top:16px;
+    font-size:13px; color:#065f46; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:999px; padding:9px 16px;}
+  .live-strip b{color:var(--green); font-size:15px;}
+  .gate{padding:14px 16px; border-radius:12px; background:#fffbeb; border:1px dashed #fcd34d;
+    font-size:13.5px; color:#92400e; line-height:1.9;}
+  .plan-add{display:flex; gap:8px; flex-wrap:wrap; margin-top:6px;}
+  .plan-add input{flex:1; min-width:220px;}
+  .checkin-form{display:flex; gap:8px; flex-wrap:wrap; margin-top:6px;}
+  .checkin-form input{flex:1; min-width:220px;}
+  .checkin-records{margin-top:14px; font-size:12.5px; color:var(--muted); line-height:2;}
+  .checkin-records b{color:#374151;}
+  .pos-line{font-size:14.5px; color:#374151; line-height:2;}
+  .pos-line b{color:var(--green); font-size:19px;}
+  .dist-bar{display:flex; height:28px; border-radius:10px; overflow:hidden; margin-top:12px;
+    border:1px solid var(--line); background:#f8fafc;}
+  .dist-bar i{display:flex; align-items:center; justify-content:center; font-style:normal; font-size:11px;
+    color:#fff; white-space:nowrap; overflow:hidden;}
+  .dist-bar i.normal{background:#10b981;} .dist-bar i.mild{background:#f59e0b;}
+  .dist-bar i.moderate{background:#f97316;} .dist-bar i.severe{background:#dc2626;}
+  .dist-legend{display:flex; gap:8px 14px; flex-wrap:wrap; margin-top:10px; font-size:12.5px; color:var(--muted);}
+  .dist-legend span{display:inline-flex; align-items:center; gap:5px;}
+  .dist-legend .cdot{width:9px; height:9px; border-radius:50%; display:inline-block;}
+  .topic-list{display:flex; flex-direction:column; gap:8px; margin-top:8px;}
+  .topic-row{display:flex; align-items:center; gap:10px; padding:11px 14px; border-radius:12px;
+    background:#fafafa; border:1px solid var(--line);}
+  .topic-row.mine{background:#f0fdf4; border-color:#bbf7d0;}
+  .topic-row .tl{flex:1; font-size:14px;}
+  .topic-row .tc{font-size:12.5px; color:var(--muted); margin-top:2px;}
+  .ping-btn{flex:0 0 auto; padding:7px 13px; border-radius:999px; border:1.5px solid var(--green);
+    background:#fff; color:var(--green); font-size:12.5px; font-weight:700; cursor:pointer; font-family:inherit;}
+  .ping-btn.on{background:var(--green); color:#fff;}
+  .ping-btn:disabled{opacity:.5; cursor:not-allowed;}
+  .my-rank{display:flex; align-items:center; gap:14px; margin:12px 0; padding:14px 16px; border-radius:16px;
+    background:linear-gradient(135deg,#ecfdf5,#f0fdfa); border:1px solid #a7f3d0;}
+  .my-rank.empty{background:linear-gradient(135deg,#f8fafc,#f1f5f9); border-color:#e2e8f0; cursor:pointer;}
+  .my-rank .mr-num{flex:0 0 54px; height:54px; border-radius:16px; display:flex; align-items:center; justify-content:center;
+    font-size:23px; font-weight:800; color:#fff; letter-spacing:-.5px;
+    background:linear-gradient(135deg,var(--green2),var(--teal)); box-shadow:0 6px 16px rgba(16,185,129,.28);}
+  .my-rank.empty .mr-num{background:linear-gradient(135deg,#cbd5e1,#94a3b8); box-shadow:none; font-size:18px;}
+  .my-rank .mr-txt{flex:1; min-width:0;}
+  .my-rank .mr-txt b{font-size:14.5px; color:#065f46; letter-spacing:.2px;}
+  .my-rank .mr-txt span{display:block; font-size:12.5px; color:#334155; line-height:1.65; margin-top:3px;}
+  .my-rank .mr-txt .mr-sub{color:#059669; font-size:11.5px; margin-top:2px;}
+  .board-list{list-style:none; margin-top:10px; display:flex; flex-direction:column; gap:8px;}
+  .board-list li{display:flex; align-items:center; gap:11px; padding:10px 14px; border-radius:14px;
+    background:#fbfdfc; border:1px solid #eef2f4; transition:.18s;}
+  .board-list li:hover{transform:translateX(2px); border-color:#d1fae5;}
+  .board-list li.top{background:linear-gradient(135deg,#fffbeb,#fffdf5); border-color:#fde68a;}
+  .board-list li.me{background:#f0fdf4; border-color:#86efac; box-shadow:0 6px 18px rgba(16,185,129,.12);}
+  .board-list .rk{flex:0 0 32px; height:32px; border-radius:10px; display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:13.5px; color:#64748b; background:#f1f5f9;}
+  .board-list li.top .rk{background:linear-gradient(135deg,#fbbf24,#f59e0b); color:#fff; font-size:16px;
+    box-shadow:0 4px 10px rgba(245,158,11,.28);}
+  .board-list li.r2 .rk{background:linear-gradient(135deg,#cbd5e1,#94a3b8); box-shadow:0 4px 10px rgba(148,163,184,.28);}
+  .board-list li.r3 .rk{background:linear-gradient(135deg,#fdba74,#f97316); box-shadow:0 4px 10px rgba(249,115,22,.26);}
+  .board-list .av{flex:0 0 34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:19px; background:#fff; border:1px solid var(--line);}
+  .board-list .ninfo{flex:1; min-width:0;}
+  .board-list .nk{display:flex; align-items:center; gap:6px; font-size:13.5px; font-weight:700; color:#1f2937;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .board-list .nk .you{flex:0 0 auto; font-size:10.5px; font-weight:700; color:var(--green);
+    background:#dcfce7; border-radius:999px; padding:1px 7px;}
+  .board-list .st{color:var(--muted); font-size:12px; margin-top:1px;}
+  .board-list .prog{flex:0 0 84px; height:6px; border-radius:999px; background:#eef2f4; overflow:hidden;}
+  .board-list .prog i{display:block; height:100%; border-radius:999px;
+    background:linear-gradient(90deg,var(--green2),var(--teal));}
+  .whisper-list{margin-top:14px; display:flex; flex-direction:column; gap:10px;}
+  .whisper{background:#fff; border:1px solid var(--line); border-radius:14px; padding:14px 16px;}
+  .whisper .wh-head{display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:6px;}
+  .whisper .wh-body{font-size:14px; color:#374151; line-height:1.8; white-space:pre-wrap; word-break:break-word;}
+  .whisper .wh-act{display:flex; gap:16px; margin-top:9px; font-size:12.5px;}
+  .whisper .wh-act button{background:none; border:none; cursor:pointer; font-size:12.5px;
+    color:var(--green); font-family:inherit; padding:0;}
+  .whisper .wh-act button:hover{text-decoration:underline;}
+  .whisper .wh-replies{margin-top:9px; padding-top:9px; border-top:1px dashed #e5e7eb;
+    font-size:13px; color:#475569; line-height:1.8;}
+
+  /* ===== 顶部栏 + 登录 ===== */
+  header{position:sticky; top:0; z-index:40; margin:0 -6px 14px; padding:12px 10px;
+    background:rgba(255,255,255,.88); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    border-bottom:1px solid rgba(229,231,235,.85);}
+  nav{position:static;}
+  .header-right{display:flex; align-items:center; gap:10px;}
+  .login-btn{display:inline-flex; align-items:center; gap:6px; padding:9px 20px; border-radius:999px;
+    border:1.5px solid var(--green); background:#fff; color:var(--green); font-weight:800; font-size:13.5px;
+    cursor:pointer; font-family:inherit; transition:.18s; white-space:nowrap;}
+  .login-btn:hover{background:var(--green); color:#fff; box-shadow:0 6px 16px rgba(5,150,105,.25);}
+  .user-chip{display:flex; align-items:center; gap:8px; padding:5px 13px 5px 5px; border-radius:999px;
+    border:1px solid var(--line); background:#fff; cursor:pointer; position:relative; user-select:none;}
+  .user-chip:hover{border-color:var(--green2);}
+  .avatar{width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(135deg,var(--green),var(--teal)); color:#fff; font-weight:800; font-size:13px;}
+  .uname{font-size:13px; font-weight:700; max-width:96px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .caret{font-size:10px; color:var(--muted);}
+  .user-menu{position:absolute; right:0; top:46px; min-width:186px; background:#fff; border:1px solid var(--line);
+    border-radius:14px; box-shadow:0 14px 34px rgba(15,23,42,.13); padding:8px; display:none; z-index:60;}
+  .user-menu.show{display:block;}
+  .um-head{padding:8px 10px 9px; font-size:11.5px; color:var(--muted); border-bottom:1px solid #f1f5f9; margin-bottom:6px;}
+  .um-head b{display:block; color:var(--ink); font-size:13px; margin-bottom:2px;}
+  .user-menu button{width:100%; text-align:left; padding:9px 10px; border:none; background:none; border-radius:9px;
+    font-size:13px; cursor:pointer; font-family:inherit; color:#374151;}
+  .user-menu button:hover{background:#f8fafc;}
+
+  /* ===== 登录弹窗 ===== */
+  .modal-mask{position:fixed; inset:0; z-index:100; display:none; align-items:center; justify-content:center;
+    padding:18px; background:rgba(15,23,42,.42); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);}
+  .modal-mask.show{display:flex;}
+  .auth-card{width:100%; max-width:404px; background:#fff; border-radius:24px; padding:28px 26px 22px;
+    position:relative; box-shadow:0 26px 70px rgba(15,23,42,.24); animation:pop .24s ease;}
+  @keyframes pop{from{transform:translateY(14px) scale(.97); opacity:0;} to{transform:none; opacity:1;}}
+  .modal-x{position:absolute; right:13px; top:12px; width:32px; height:32px; border-radius:50%; border:none;
+    background:#f8fafc; color:#64748b; font-size:18px; line-height:1; cursor:pointer;}
+  .modal-x:hover{background:#f1f5f9;}
+  .auth-logo{text-align:center; font-size:34px; line-height:1;}
+  .auth-card h3{text-align:center; font-size:19px; margin:10px 0 5px; color:var(--ink);}
+  .auth-sub{text-align:center; font-size:12.5px; color:var(--muted); line-height:1.7; margin-bottom:14px;}
+  .auth-mode{text-align:center; font-size:11.5px; color:#059669; background:#f0fdf4; border:1px solid #d1fae5;
+    border-radius:10px; padding:7px 10px; line-height:1.6; margin:-6px 0 12px; min-height:0;}
+  .auth-mode:empty{display:none;}
+  .auth-tabs{display:flex; background:#f1f5f9; border-radius:12px; padding:4px; margin-bottom:6px;}
+  .auth-tabs button{flex:1; border:none; background:none; padding:9px; border-radius:9px; font-size:13.5px;
+    font-weight:700; color:#64748b; cursor:pointer; font-family:inherit; transition:.15s;}
+  .auth-tabs button.on{background:#fff; color:var(--green); box-shadow:0 2px 8px rgba(15,23,42,.08);}
+  .auth-card label{display:block; font-size:12.5px; font-weight:700; color:#475569; margin:11px 0 5px;}
+  .auth-card input{width:100%; padding:11px 13px; border-radius:11px; border:1.5px solid var(--line);
+    font-size:14px; font-family:inherit; background:#fcfdfd; color:var(--ink);}
+  .auth-card input:focus{outline:none; border-color:var(--green2); box-shadow:0 0 0 3px rgba(16,185,129,.13);}
+  .auth-submit{width:100%; margin-top:16px; padding:12px; font-size:14.5px; border-radius:12px;}
+  .auth-error{font-size:12.5px; color:#dc2626; min-height:17px; margin-top:8px; text-align:center;}
+  .auth-adv{margin-top:12px; font-size:12px; color:var(--muted);}
+  .auth-adv summary{cursor:pointer; list-style:none; color:#94a3b8; text-align:center;}
+  .auth-adv summary::-webkit-details-marker{display:none;}
+  .auth-adv .api-form{display:flex; gap:6px; margin-top:8px;}
+  .auth-adv input{flex:1; padding:8px 10px; font-size:12.5px;}
+  .auth-adv .tips{text-align:left; margin-top:6px;}
+  .auth-note{font-size:11.5px; color:#94a3b8; line-height:1.7; margin-top:12px; text-align:center;}
+  .peer-hint{padding:16px; border-radius:14px; background:linear-gradient(135deg,#f0fdf4,#ecfdf5);
+    border:1px dashed #a7f3d0; font-size:13.5px; color:#065f46; line-height:1.9; text-align:center;}
+  .peer-hint .link{color:var(--green); font-weight:800; cursor:pointer; text-decoration:underline;}
+  #toast{position:fixed; left:50%; bottom:36px; transform:translate(-50%,12px); z-index:120;
+    background:rgba(15,23,42,.92); color:#fff; font-size:13.5px; padding:11px 20px; border-radius:999px;
+    opacity:0; pointer-events:none; transition:.25s; box-shadow:0 10px 30px rgba(15,23,42,.28);}
+  #toast.show{opacity:1; transform:translate(-50%,0);}
+
   @media(max-width:520px){
     .radar-box{justify-content:center;} .streak .num{font-size:32px;} .streak .num.small{font-size:22px;}
     .hero-title{font-size:30px;} .hero-tag{font-size:16.5px;} nav button{min-width:96px; font-size:13.5px;}
     .arrow{display:none;}
+    header{flex-wrap:nowrap;} .brand .sub{display:none;} .badge{display:none;}
+    .uname{max-width:64px;}
+    .board-list .prog{display:none;} .board-list li{padding:9px 11px;} .ninfo{min-width:0;}
   }
 </style>
 </head>
@@ -201,7 +352,10 @@
         <div class="sub">青年成长 AI 搭子 · 把焦虑变成行动</div>
       </div>
     </div>
-    <div class="badge" id="engineBadge"><span class="dot"></span><span id="engineText">离线可用 · 无需联网</span></div>
+    <div class="header-right">
+      <div class="badge" id="engineBadge"><span class="dot"></span><span id="engineText">离线可用 · 无需联网</span></div>
+      <div id="authArea"><button class="login-btn" onclick="openAuth('login')">登录 / 注册</button></div>
+    </div>
   </header>
 
   <nav>
@@ -211,6 +365,7 @@
     <button data-p="plan">📋 成长计划</button>
     <button data-p="check">✅ 行动打卡</button>
     <button data-p="gad7">📊 情绪自测</button>
+    <button data-p="peer">🫂 同伴</button>
   </nav>
 
   <!-- ⓪ 首页 -->
@@ -229,7 +384,8 @@
         <div class="arrow">→</div>
         <div class="flow-step" onclick="switchTab('check')"><span class="no">4</span><b>坚持打卡</b><span>让坚持可见</span></div>
       </div>
-      <div class="hero-meta"><span>🎯 免费</span><span>🔒 无需注册</span><span>📶 无需联网</span><span>🫂 危机守护</span><span>🤝 不懂技术也能用</span></div>
+      <div class="hero-meta"><span>🎯 免费</span><span>🔒 数据只属于你</span><span>☁️ 登录可同步</span><span>🫂 危机守护</span><span>🤝 不懂技术也能用</span></div>
+      <div class="live-strip" id="homeLive" style="display:none;"></div>
     </div>
 
     <div class="card">
@@ -239,7 +395,7 @@
         <li><span class="no">2</span><div><b>跟着做</b><p>按给出的「下一步行动」或「7 天计划」，每天做一个小动作。</p></div></li>
         <li><span class="no">3</span><div><b>打个卡</b><p>完成就在「行动打卡」点一下，看着坚持一点点累积。</p></div></li>
       </ol>
-      <p class="tips">💡 所有功能都在本机运行，你的信息只保存在自己浏览器里，不会上传。</p>
+      <p class="tips">💡 不登录也能用，数据只存在本机浏览器；登录后才会同步到你的账号，随时可以退出。</p>
     </div>
   </section>
 
@@ -276,16 +432,21 @@
   <section class="panel" id="p-plan">
     <div class="card">
       <h2>📋 成长计划</h2>
-      <div class="hint">选一个你想提升的方向，生成一份 7 天可执行的微计划。点一下任务就能标记完成，进度自动保存。</div>
-      <label>成长方向</label>
-      <select id="planDir">
+      <div class="hint">大方向由你选，具体做什么由你自己写。越具体、越小，越容易真的做到。</div>
+      <label>我的成长大方向</label>
+      <select id="planDir" onchange="renderPlan(this.value)">
         <option value="tech">专业硬实力</option>
         <option value="express">表达与沟通</option>
         <option value="create">创造与审美</option>
         <option value="career">职业准备</option>
         <option value="mind">身心状态</option>
       </select>
-      <button class="btn" onclick="genPlan()">📅 生成 7 天计划</button>
+      <label>这一周，具体想做什么？（自己写，例：大方向「专业硬实力」→ 具体「每天背 30 个雅思单词」）</label>
+      <div class="plan-add">
+        <input type="text" id="planNewText" placeholder="例：每天背 30 个雅思单词 / 每周做 2 道算法题">
+        <button class="btn" onclick="addPlanTask()">＋ 加入我的计划</button>
+        <button class="btn ghost" onclick="fillPlanExample()">💡 参考示例</button>
+      </div>
       <div class="result" id="planResult"></div>
     </div>
   </section>
@@ -294,16 +455,21 @@
   <section class="panel" id="p-check">
     <div class="card">
       <h2>✅ 行动打卡</h2>
-      <div class="hint">每天完成一个成长小动作，就点一下。坚持会让你看到复利。</div>
+      <div class="hint">每天完成一件小事就打个卡，并写下你具体做了什么。坚持会让你看到复利。</div>
       <div class="today-action" id="todayAction"></div>
+      <label>今天完成了什么？（打卡内容，自己写）</label>
+      <div class="checkin-form">
+        <input type="text" id="checkinText" placeholder="例：背了 30 个雅思单词 / 跑步 20 分钟 / 写完论文大纲">
+        <button class="btn" onclick="checkin()">✔ 今日打卡</button>
+      </div>
       <div class="streak">
         <div><div class="num" id="streakNum">0</div><div class="cap">连续打卡（天）</div></div>
         <div><div class="num small" id="monthNum">0</div><div class="cap">本月（天）</div></div>
         <div><div class="num small" id="totalNum">0</div><div class="cap">累计（天）</div></div>
-        <div><button class="btn" onclick="checkin()">✔ 今日打卡</button></div>
       </div>
       <div class="calendar" id="calendar"></div>
       <div class="cheer" id="cheer"></div>
+      <div class="checkin-records" id="checkinRecords"></div>
     </div>
   </section>
 
@@ -319,9 +485,48 @@
     </div>
   </section>
 
+  <!-- ⑥ 同伴（第 7 个模块） -->
+  <section class="panel" id="p-peer">
+    <div class="card">
+      <div class="sec-title"><span class="bar"></span>你并不孤单</div>
+      <div class="live-strip" id="peerLive"><span>正在读取同伴数据…</span></div>
+      <p class="tips">🔒 这里只展示「人数与主题」的聚合数据，不展示任何人的原文与身份。</p>
+    </div>
+
+    <div class="card">
+      <h2>🎯 我的位置</h2>
+      <div class="hint">做过情绪自测（GAD-7）后，这里会显示你在全体同学中的位置——用百分位和分布，而不是焦虑排名。</div>
+      <div id="peerPosition"></div>
+      <div class="next-actions">
+        <button class="btn ghost" onclick="switchTab('gad7')">📊 去做情绪自测</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🫂 焦虑共鸣墙</h2>
+      <div class="hint">大家都在担心什么？点「我也是」，让和你一样的人知道你也在——不暴露任何人的原文。</div>
+      <div id="peerTopics"></div>
+    </div>
+
+    <div class="card">
+      <h2>🏅 成长坚持榜</h2>
+      <div class="hint">只看正向行动，全部匿名。你坚持的每一天都算数。</div>
+      <div id="peerBoard"></div>
+    </div>
+
+    <div class="card">
+      <h2>🌿 匿名树洞</h2>
+      <div class="hint">写一句最近的感悟，或回应别人。全部匿名，不显示任何账号信息，发布前会做敏感词审核。这里只展示近 7 天的内容，新的排在前面。</div>
+      <textarea id="whisperText" maxlength="300" placeholder="例：今天终于把拖了两周的任务做完了，原来看似难的事，开始就没那么难。"></textarea>
+      <button class="btn" onclick="postWhisper()">🌿 匿名发布</button>
+      <div id="peerWhispers" class="whisper-list"></div>
+    </div>
+  </section>
+
   <footer>
     <div>「青芽」— 面向全体大学生的成长搭子 · 数绘青春「数智新技艺」参赛作品</div>
-    <div class="safe">🔒 离线模式：你的信息仅保存在本机浏览器，不会上传到任何服务器</div>
+    <div class="safe">🔒 未登录时所有信息仅保存在本机浏览器；登录后按账号严格隔离</div>
+    <div class="safe" style="font-size:11.5px;">ℹ️ 同伴区含少量系统体验用户数据，用于演示社区氛围，均为匿名聚合展示</div>
     <details>
       <summary>📁 导出 / 导入我的数据（换设备不丢）</summary>
       <div class="api-note">
@@ -344,9 +549,36 @@
       </div>
     </details>
   </footer>
+
+  <!-- 登录 / 注册弹窗 -->
+  <div class="modal-mask" id="authMask" onclick="if(event.target===this)closeAuth()">
+    <div class="auth-card">
+      <button class="modal-x" onclick="closeAuth()">×</button>
+      <div class="auth-logo">🌱</div>
+      <h3 id="authTitle">欢迎回到青芽</h3>
+      <p class="auth-sub" id="authSub">登录后，你的计划与打卡会云端同步，也能看到同伴的真实数据。</p>
+      <p class="auth-mode" id="authMode"></p>
+      <div class="auth-tabs">
+        <button class="on" data-tab="login" onclick="setAuthTab('login')">登录</button>
+        <button data-tab="register" onclick="setAuthTab('register')">注册</button>
+      </div>
+      <label>用户名</label>
+      <input type="text" id="authUser" placeholder="2-20 个字符，可用字母/数字/下划线" autocomplete="username">
+      <label>密码</label>
+      <input type="password" id="authPass" placeholder="至少 6 位" autocomplete="current-password"
+        onkeydown="if(event.key==='Enter')submitAuth()">
+      <button class="btn auth-submit" id="authSubmit" onclick="submitAuth()">登录并同步数据</button>
+      <p class="auth-error" id="authError"></p>
+      <p class="auth-note">🔒 数据按账号隔离；同伴区只展示聚合人数与主题，不公开任何人的原文与身份</p>
+    </div>
+  </div>
 </div>
 
 <script>
+/* ============ 云端地址（只有开发者需要看到，用户无需填写） ============ */
+/* 部署好后端后，把 Render 地址填在下面这一行即可；留空则自动使用同源后端或本机模式。 */
+const CLOUD_API = '';   // 例：'https://qingya-api.onrender.com'
+
 /* ============ 数据：能力维度与关键词映射 ============ */
 const DIMS = [
   {key:'define', name:'定义问题的能力', short:'定义问题', base:52},
@@ -551,6 +783,36 @@ const ANX=[
    can:'你能控制的：你今天的节奏、你选择投入的方向、你对自己的认可。',
    cannot:'你无法控制的：别人的起点、进度、高光时刻。',
    next:'下一步行动：关掉对比，写下"相比上个月，我哪一点进步了"，再为下个月定一个只属于自己的小目标。'},
+  {k:['身高','太矮','长不高','矮个子','长高','个子','胖','太胖','体重','减肥','外貌','长相','颜值','丑','不好看','皮肤','身材','腿','脸','显老','黑'],
+   reframe:'身高和外貌更像"出厂设置"，但一个人的吸引力从来不是单一数字决定的：体态、干净利落、表达和专注做事的样子，都会持续加分。你已经长成的部分，不需要被某个"标准"否定。',
+   can:'你能控制的：体态（挺拔常常比几厘米更显气质）、穿搭与发型、运动与睡眠、你的表达和作品。',
+   cannot:'你无法控制的：骨骼闭合后的自然身高、别人随口定的审美标准。',
+   next:'下一步行动：今天靠墙站立或拉伸 10 分钟，挑一套让自己显精神的穿搭，再写下 3 个别人夸过你的优点。'},
+  {k:['失眠','睡不着','熬夜','头疼','身体','生病','医院','吃药','心慌','手抖','喘不过气','没力气','躯体化'],
+   reframe:'身体的不舒服是真实的，它值得被认真对待，而不是被"忍一忍就过去了"打发。先照顾好身体，再谈努力。',
+   can:'你能控制的：今天的作息、是否去校医或正规医院咨询、把症状记下来。',
+   cannot:'你无法控制的：身体恢复的速度、检查结果。',
+   next:'下一步行动：如果症状持续或已经影响生活，今天预约校医/正规医院；今晚提前 30 分钟放下手机。'},
+  {k:['父母','爸妈','家里','家人','吵架','催我','原生家庭','亲戚','不理解我','离家'],
+   reframe:'和家人的冲突，常常不是"谁对谁错"，而是两代人对"好生活"的定义不同。你可以理解他们的担心，但不必用他们的人生剧本演自己。',
+   can:'你能控制的：沟通的时机和方式、划定边界、先把自己的生活稳住。',
+   cannot:'你无法控制：他们的观念、情绪，以及是否立刻理解你。',
+   next:'下一步行动：挑一件小事，用"我需要…"而不是"你总是…"的句式说一次；说不通就先放一放，不急着赢。'},
+  {k:['分手','恋爱','喜欢的人','表白','对象','男朋友','女朋友','暗恋','失恋','感情','被拒绝','不回消息'],
+   reframe:'感情里的失落，不代表你不够好，只是"两个人是否合适"这件事，本来就不由单方面的努力决定。',
+   can:'你能控制的：表达真心、尊重对方的决定、把注意力收回到自己身上。',
+   cannot:'你无法控制：对方的心意、关系的走向。',
+   next:'下一步行动：今天给情绪一个出口（写 10 分钟日记或去散步），再约一个朋友做一件具体的事，不独自反复回放。'},
+  {k:['钱','穷','没钱','生活费','学费','经济','兼职','赚钱','花呗','负债','家里没钱'],
+   reframe:'经济压力是现实问题，不是"你不够努力"的证据。先看清数字，再谈解决办法，比在焦虑里打转有用。',
+   can:'你能控制的：记账、砍掉非必要支出、寻找兼职或奖助学金信息、开口求助。',
+   cannot:'你无法控制：家庭的经济状况、别人的消费水平。',
+   next:'下一步行动：今天把最近一个月支出记下来，圈出 1 个可以立刻省掉的小项，并查 1 条校内奖助/兼职信息。'},
+  {k:['拖延','自控','懒','效率','时间不够','玩手机','刷视频','起不来','静不下心','坚持不了','三分钟热度'],
+   reframe:'拖延往往不是"懒"，而是"害怕做不好"或"任务太大不知道从哪开始"。你缺的可能不是意志力，而是一个足够小的起点。',
+   can:'你能控制的：把任务切小、先做 2 分钟、减少干扰源。',
+   cannot:'你无法控制：一时的分心、状态的起伏。',
+   next:'下一步行动：把最想拖的事拆成"2 分钟就能做完"的第一步，现在只做这一步，做完再决定要不要继续。'},
 ];
 const ANX_DEFAULT={
   reframe:'焦虑是身体在提醒你"这件事对我很重要"。与其抗拒它，不如把它当成一条线索——它指向的，正是你该去行动的地方。',
@@ -559,9 +821,20 @@ const ANX_DEFAULT={
   next:'下一步行动：把焦虑写下来，问自己"其中最让我害怕的一点是什么"，然后为它设计一个最小动作，今天就做。'
 };
 function localAnxiety(raw){
-  const t=raw.toLowerCase();
-  for(const a of ANX){ if(a.k.some(w=>t.includes(w))) return {...a, source:'rule'}; }
-  return {...ANX_DEFAULT, source:'rule'};
+  const t=String(raw||'').toLowerCase();
+  let best=ANX_DEFAULT, bestScore=0;
+  for(const a of ANX){
+    let score=0;
+    for(const w of a.k){ if(t.includes(w)) score += w.length>=2?2:1; }
+    if(score>bestScore){ bestScore=score; best=a; }
+  }
+  const out={...best, source:'rule'};
+  /* 命中具体主题时，先复述你写下的那句话，避免看起来"答非所问" */
+  if(bestScore>0){
+    const q=String(raw).trim().replace(/\s+/g,' ');
+    out.reframe='你写下的是「'+(q.length>26?q.slice(0,26)+'…':q)+'」。'+best.reframe;
+  }
+  return out;
 }
 function renderAnxietyResult(r){
   const el=document.getElementById('anxietyResult');
@@ -610,10 +883,61 @@ const PLANS={
   career:['写一版简历，请一位学长 / 老师提意见','调研 3 个你感兴趣的岗位，各记一句"它到底要什么"','主动约 1 个人做 10 分钟行业 / 职业访谈','把你的项目 / 作品整理成一个可展示的链接或文档','模拟一次面试自我介绍（30 秒 + 2 分钟两版）','补强一个目标岗位要求、但你还不熟的技能点','复盘：写"我离目标岗位还差什么 + 下一步"'],
   mind:['早起 / 睡前做 5 分钟"三件好事"记录（今天什么让我感觉好）','运动 20 分钟，任何形式都行','睡前 30 分钟不看手机，改读 / 写','给自己安排 1 小时无目的的放松，不内疚','整理房间或书桌一角，清空一个干扰源','和信任的人认真聊一次近况，说真话','复盘：写"这周我照顾好自己的 3 个瞬间"'],
 };
+const PLAN_LABELS={tech:'专业硬实力',express:'表达与沟通',create:'创造与审美',career:'职业准备',mind:'身心状态'};
+const TASK_KEY='qingya_tasks';
 function loadPlanDone(){ try{ return JSON.parse(localStorage.getItem('qingya_plan'))||{}; }catch(e){ return {}; } }
 function savePlanDone(o){ localStorage.setItem('qingya_plan', JSON.stringify(o)); }
 function myPlanDone(){ return isAccount() ? S.planDone : loadPlanDone(); }
+function loadTasksLocal(){ try{ return JSON.parse(localStorage.getItem(TASK_KEY))||{}; }catch(e){ return {}; } }
+function saveTasksLocal(o){ localStorage.setItem(TASK_KEY, JSON.stringify(o)); }
+
+/* 大方向由下拉框选，具体内容由用户自己写：账号模式存云端，未登录存本机 */
+async function myTasks(dir){
+  if(isAccount()){
+    try{ const r=await api('/api/plan/tasks?dir='+encodeURIComponent(dir)); return r.tasks||[]; }
+    catch(e){ return []; }
+  }
+  return loadTasksLocal()[dir]||[];
+}
 function genPlan(){ renderPlan(document.getElementById('planDir').value); }
+
+async function addPlanTask(){
+  const dir=document.getElementById('planDir').value;
+  const input=document.getElementById('planNewText');
+  const txt=input.value.trim();
+  if(!txt){ alert('写下你这一周真的会做的那件事，例：每天背 30 个雅思单词'); return; }
+  if(txt.length>60){ alert('一条计划控制在 60 字以内，越具体越容易做到'); return; }
+  if(isAccount()){
+    try{ await api('/api/plan/tasks',{method:'POST',body:{dir,text:txt}}); }
+    catch(e){ alert('保存失败：'+e.message); return; }
+  } else {
+    const o=loadTasksLocal(); const arr=o[dir]||[];
+    if(!arr.length){ const pd=loadPlanDone(); pd[dir]=[]; savePlanDone(pd); } // 新计划清掉旧勾选，避免串号
+    const idx=arr.length?Math.max.apply(null,arr.map(t=>t.idx))+1:0;
+    arr.push({idx,text:txt}); o[dir]=arr; saveTasksLocal(o);
+  }
+  input.value='';
+  renderPlan(dir);
+}
+async function removePlanTask(dir, idx){
+  if(!confirm('确认删除这条计划？')) return;
+  if(isAccount()){
+    try{ await api('/api/plan/tasks?dir='+encodeURIComponent(dir)+'&idx='+idx,{method:'DELETE'}); }
+    catch(e){ alert('删除失败：'+e.message); return; }
+    S.planDone=(await api('/api/plan')).done;
+  } else {
+    const o=loadTasksLocal(); o[dir]=(o[dir]||[]).filter(t=>t.idx!==idx); saveTasksLocal(o);
+    const pd=loadPlanDone(); pd[dir]=(pd[dir]||[]).filter(i=>i!==idx); savePlanDone(pd);
+  }
+  renderPlan(dir);
+}
+function fillPlanExample(){
+  const dir=document.getElementById('planDir').value;
+  const list=PLANS[dir]||[];
+  const input=document.getElementById('planNewText');
+  input.value=list.length?list[0]:'';
+  input.focus();
+}
 async function togglePlan(dir, i){
   if(isAccount()){
     try{
@@ -627,36 +951,55 @@ async function togglePlan(dir, i){
   }
   renderPlan(dir);
 }
-function renderPlan(dir){
-  const items=PLANS[dir];
+async function renderPlan(dir){
+  const tasks=await myTasks(dir);
   const done=new Set(myPlanDone()[dir]||[]);
-  const pct=Math.round(done.size/items.length*100);
+  const label=PLAN_LABELS[dir]||'成长';
   const el=document.getElementById('planResult');
+  if(!tasks.length){
+    el.innerHTML=`<div class="gate">「<b>${label}</b>」是你的大方向，具体做什么由你自己定。<br>写一条你这周真的会做的小事，例：每天背 30 个雅思单词。</div>`;
+    el.classList.add('show'); return;
+  }
+  const doneN=tasks.filter(t=>done.has(t.idx)).length;
+  const pct=Math.round(doneN/tasks.length*100);
   el.innerHTML=`
-    <div class="plan-head"><span>已完成 <b>${done.size}</b> / ${items.length}</span>
+    <div class="plan-head"><span>「${label}」已完成 <b>${doneN}</b> / ${tasks.length}</span>
       <div class="plan-bar"><i style="width:${pct}%"></i></div></div>
-    <ul class="plan-list">${items.map((t,i)=>`
-      <li class="${done.has(i)?'done':''}" onclick="togglePlan('${dir}',${i})">
-        <div class="d">Day<br>${i+1}</div><div class="t">${t}</div><div class="ck">${done.has(i)?'✓':'○'}</div>
+    <ul class="plan-list">${tasks.map((t,i)=>`
+      <li class="${done.has(t.idx)?'done':''}" onclick="togglePlan('${dir}',${t.idx})">
+        <div class="d">第<br>${i+1}条</div><div class="t">${escapeHTML(t.text)}</div>
+        <button class="del" title="删除" onclick="event.stopPropagation();removePlanTask('${dir}',${t.idx})">×</button>
+        <div class="ck">${done.has(t.idx)?'✓':'○'}</div>
       </li>`).join('')}</ul>
-    <p style="font-size:12.5px;color:var(--muted);margin-top:8px;">💡 点一下任务即可标记完成（${isAccount()?'云端保存':'保存在本机'}）；每天完成一件，也去「行动打卡」点一下。</p>`;
+    <p style="font-size:12.5px;color:var(--muted);margin-top:8px;">💡 点一下任务即可标记完成（${isAccount()?'云端保存':'保存在本机'}）；每天完成一件，也去「行动打卡」写下具体做了什么。</p>`;
   el.classList.add('show');
 }
 
-/* ============ ④ 行动打卡 ============ */
+/* ============ ④ 行动打卡（打卡内容由用户自己写） ============ */
 const KEY='qingya_checks';
+const CKEY='qingya_check_content';
 function loadChecks(){ try{ return JSON.parse(localStorage.getItem(KEY))||[]; }catch(e){ return []; } }
 function saveChecks(a){ localStorage.setItem(KEY, JSON.stringify(a)); }
+function loadCheckContent(){ try{ return JSON.parse(localStorage.getItem(CKEY))||{}; }catch(e){ return {}; } }
+function saveCheckContent(m){ localStorage.setItem(CKEY, JSON.stringify(m)); }
 function todayStr(){ const d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
 function myChecks(){ return isAccount() ? S.checks : loadChecks(); }
 async function checkin(){
   const t=todayStr();
+  const input=document.getElementById('checkinText');
+  const raw=input?input.value.trim():'';
+  if(!raw){ alert('先写下今天完成了什么，例：背了 30 个雅思单词'); return; }
+  if(raw.length>120){ alert('打卡内容请控制在 120 字以内'); return; }
   if(isAccount()){
-    try{ const r=await api('/api/checkins',{method:'POST',body:{date:t}}); S.checks=r.dates; }
-    catch(e){ alert('同步失败：'+e.message); }
+    try{
+      const r=await api('/api/checkins',{method:'POST',body:{date:t, content:raw}});
+      S.checks=r.dates; S.records=r.records||[];
+    }catch(e){ alert('同步失败：'+e.message); return; }
   } else {
-    const a=loadChecks(); if(!a.includes(t)){ a.push(t); saveChecks(a); }
+    const a=loadChecks(); if(!a.includes(t)) a.push(t); saveChecks(a);
+    const m=loadCheckContent(); m[t]=raw; saveCheckContent(m);
   }
+  if(input) input.value='';
   renderCheck();
 }
 function calcStreak(){
@@ -673,7 +1016,11 @@ function renderTodayAction(){
     <button class="btn ghost" onclick="completeTodayAction()">✔ 我做到了</button>`;
 }
 async function completeTodayAction(){
+  let t=''; try{ t=localStorage.getItem('qingya_today_action')||''; }catch(e){}
+  const input=document.getElementById('checkinText');
+  if(input && !input.value.trim()) input.value=t.slice(0,120);
   await checkin();
+  if(input && input.value.trim()) return; // 打卡未完成（内容被清空说明已提交）
   try{ localStorage.removeItem('qingya_today_action'); }catch(e){}
   renderTodayAction();
 }
@@ -702,18 +1049,35 @@ function renderCheck(){
     html+=`<div class="day ${done?'done':''} ${isToday?'today':''}">${done?'✓':dd}</div>`;
   }
   document.getElementById('calendar').innerHTML=html;
+
+  /* 打卡记录（能看到自己每天具体做了什么） */
+  const rl=document.getElementById('checkinRecords');
+  if(rl){
+    const recs=isAccount() ? (S.records||[]) : Object.keys(loadCheckContent()).sort().reverse().map(d=>({date:d, content:loadCheckContent()[d]}));
+    rl.innerHTML = recs.length
+      ? '<b>📝 我的打卡记录</b><br>'+recs.slice(0,8).map(r=>`${r.date} · ${escapeHTML(r.content||'（未写内容）')}`).join('<br>')
+      : '';
+  }
 }
 
 /* ============ 服务器连接 + 账号（可选登录，离线优先，数据严格隔离） ============ */
 let SVR = localStorage.getItem('qingya_server')||'';
 let TOKEN = localStorage.getItem('qingya_token')||'';
 let UNAME = localStorage.getItem('qingya_user')||'';
+let LOCAL_USER = localStorage.getItem('qingya_local_user')||'';   // 无后端时的本机账号
+let LOCAL_NICK = localStorage.getItem('qingya_local_nick')||'';
 let SVR_UP = false;      // 服务器是否可达
 let SVR_ONLINE = false;  // 服务器是否接了真 AI
-let S = { checks:[], planDone:{}, gad7:[] }; // 账号模式的内存数据（绝不写 localStorage）
+let S = { checks:[], planDone:{}, gad7:[], records:[] }; // 账号模式的内存数据（绝不写 localStorage）
 
 function serverOn(){ return !!SVR; }
 function isAccount(){ return !!TOKEN && !!SVR; }
+function isLoggedIn(){ return isAccount() || !!LOCAL_USER; }
+function displayName(){ return isAccount() ? UNAME : LOCAL_USER; }
+function nickFromName(name){
+  let h=0; String(name||'').split('').forEach(c=>{ h=(h*31+c.charCodeAt(0))>>>0; });
+  return NICK_ADJ[h%NICK_ADJ.length]+NICK_NOUN[h%NICK_NOUN.length];
+}
 function apiBase(){ return SVR.replace(/\/+$/,''); }
 
 async function api(path, opts={}){
@@ -735,59 +1099,149 @@ function updateStatus(){
   const txt=document.getElementById('engineText');
   const dot=document.getElementById('engineBadge').querySelector('.dot');
   if(isAccount()){ txt.textContent = SVR_UP ? ('云端同步 · '+UNAME) : '云端模式 · 服务器不可达'; dot.style.background='var(--amber)'; }
+  else if(LOCAL_USER){ txt.textContent='已登录 · 数据保存在本机'; dot.style.background='var(--green2)'; }
   else if(serverOn()){ txt.textContent = SVR_UP ? (SVR_ONLINE?'在线增强 · 免登录':'已连服务器 · 免登录') : '服务器不可达 · 已回本机'; dot.style.background='var(--green2)'; }
   else { txt.textContent='离线可用 · 数据仅存本机'; dot.style.background='var(--green2)'; }
 }
 
-function saveServer(){
-  const v=document.getElementById('serverUrl').value.trim().replace(/\/+$/,'');
-  SVR=v;
-  if(v) localStorage.setItem('qingya_server',v); else localStorage.removeItem('qingya_server');
-  if(!v){
-    TOKEN=''; UNAME='';
-    localStorage.removeItem('qingya_token'); localStorage.removeItem('qingya_user');
-    S={checks:[],planDone:{},gad7:[]};
-    clearResults(); renderCheck(); renderTodayAction();
-    alert('已恢复本机离线模式。');
+/* ============ 账号：右上角登录 / 注册 ============ */
+let AUTH_TAB='login';
+function openAuth(tab){
+  AUTH_TAB=tab||'login';
+  setAuthTab(AUTH_TAB);
+  const mask=document.getElementById('authMask');
+  if(mask) mask.classList.add('show');
+  setAuthModeNote();
+  setTimeout(()=>{ const u=document.getElementById('authUser'); if(u) u.focus(); },60);
+}
+function setAuthModeNote(){
+  const m=document.getElementById('authMode'); if(!m) return;
+  m.textContent = serverOn()
+    ? '☁️ 已连接云端：登录后计划与打卡自动同步'
+    : '💾 本机模式：登录后数据保存在这台设备，不需要任何服务器设置';
+}
+function closeAuth(){ const m=document.getElementById('authMask'); if(m) m.classList.remove('show'); }
+function setAuthTab(tab){
+  AUTH_TAB=tab;
+  document.querySelectorAll('.auth-tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===tab));
+  const isLogin=tab==='login';
+  document.getElementById('authTitle').textContent=isLogin?'欢迎回到青芽':'创建你的青芽账号';
+  document.getElementById('authSub').textContent=isLogin
+    ?(serverOn()?'登录后，你的计划与打卡会云端同步，也能看到同伴的真实数据。'
+               :'登录后，你的计划、打卡和同伴互动都会保存在你的账号里。')
+    :'注册后，你的成长记录会保存在账号里，换设备也能接着用。';
+  document.getElementById('authSubmit').textContent=isLogin?'登录并同步数据':'注册并开始使用';
+  showAuthError('');
+}
+function showAuthError(msg){ const e=document.getElementById('authError'); if(e) e.textContent=msg||''; }
+function submitAuth(){ doAuth(AUTH_TAB); }
+function updateAuthUI(){
+  const el=document.getElementById('authArea');
+  if(!el) return;
+  if(isLoggedIn()){
+    const name=displayName();
+    const initial=(name||'青').slice(0,1).toUpperCase();
+    const mode=isAccount()?'已登录 · 数据实时同步云端':'本机账号 · 数据保存在这台设备';
+    el.innerHTML=`
+      <div class="user-chip" onclick="toggleUserMenu(event)">
+        <div class="avatar">${escapeHTML(initial)}</div>
+        <span class="uname">${escapeHTML(name)}</span><span class="caret">▾</span>
+        <div class="user-menu" id="userMenu" onclick="event.stopPropagation()">
+          <div class="um-head"><b>${escapeHTML(name)}</b>${mode}</div>
+          <button onclick="closeUserMenu();switchTab('check')">✅ 我的打卡</button>
+          <button onclick="closeUserMenu();switchTab('peer')">🫂 同伴数据</button>
+          <button onclick="closeUserMenu();openAuth('login')">👤 切换账号</button>
+          <button onclick="closeUserMenu();doLogout()">↩ 退出登录</button>
+        </div>
+      </div>`;
   } else {
-    alert('服务器地址已保存：现在可注册/登录同步数据（不登录也能正常用）。');
+    el.innerHTML='<button class="login-btn" onclick="openAuth(\'login\')">登录 / 注册</button>';
   }
-  refreshStatus();
+}
+function toggleUserMenu(e){ if(e) e.stopPropagation(); const m=document.getElementById('userMenu'); if(m) m.classList.toggle('show'); }
+function closeUserMenu(){ const m=document.getElementById('userMenu'); if(m) m.classList.remove('show'); }
+document.addEventListener('click',()=>closeUserMenu());
+
+function toast(msg){
+  let t=document.getElementById('toast');
+  if(!t){ t=document.createElement('div'); t.id='toast'; document.body.appendChild(t); }
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(t._tm); t._tm=setTimeout(()=>t.classList.remove('show'),2600);
+}
+
+async function localSignIn(mode){
+  const u=document.getElementById('authUser').value.trim();
+  LOCAL_USER=u; LOCAL_NICK=nickFromName(u);
+  try{
+    localStorage.setItem('qingya_local_user',LOCAL_USER);
+    localStorage.setItem('qingya_local_nick',LOCAL_NICK);
+  }catch(e){}
+  closeAuth();
+  updateAuthUI(); updateStatus();
+  loadOverview();
+  if(document.getElementById('p-peer').classList.contains('on')) await loadPeer();
+  toast((mode==='register'?'注册成功':'登录成功')+'：'+LOCAL_NICK+'，数据保存在本机');
 }
 
 async function doAuth(mode){
   const u=document.getElementById('authUser').value.trim();
   const p=document.getElementById('authPass').value;
-  if(!u||!p){ alert('请填写用户名和密码'); return; }
-  if(!serverOn()){ alert('请先填写并连接服务器地址'); return; }
+  if(!u||!p){ showAuthError('请填写用户名和密码'); return; }
+  if(u.length<2||u.length>20){ showAuthError('用户名需 2-20 个字符'); return; }
+  if(p.length<6){ showAuthError('密码至少 6 位'); return; }
+
+  /* 没有后端（或临时连不上）时：使用本机账号，登录后数据仍保存在这台设备，界面与云端一致 */
+  if(serverOn() && !SVR_UP) await refreshStatus();
+  if(!serverOn() || !SVR_UP){ await localSignIn(mode); return; }
+
+  const btn=document.getElementById('authSubmit');
+  const oldTxt=btn.textContent;
+  btn.disabled=true; btn.textContent='同步中…';
   try{
     const r=await api('/api/'+mode, {method:'POST', body:{username:u, password:p}});
-    TOKEN=r.token; UNAME=r.username;
+    TOKEN=r.token; UNAME=r.username; LOCAL_USER=''; LOCAL_NICK='';
+    try{
+      localStorage.removeItem('qingya_local_user'); localStorage.removeItem('qingya_local_nick');
+    }catch(e){}
     localStorage.setItem('qingya_token',TOKEN); localStorage.setItem('qingya_user',UNAME);
-    S={checks:[],planDone:{},gad7:[]};          // 清空内存，杜绝串台
+    S={checks:[],planDone:{},gad7:[],records:[]};          // 清空内存，杜绝串台
     try{ localStorage.removeItem('qingya_today_action'); }catch(e){}
     await pullAccount();
     await refreshStatus();
+    closeAuth();
+    updateAuthUI();
     clearResults();
     renderCheck(); renderTodayAction(); renderGad7History();
-    alert((mode==='register'?'注册':'登录')+'成功，数据已切换到云端「'+UNAME+'」');
-  }catch(e){ alert((mode==='register'?'注册':'登录')+'失败：'+e.message); }
+    renderPlan(document.getElementById('planDir').value);
+    await loadOverview();
+    if(document.getElementById('p-peer').classList.contains('on')) await loadPeer();
+    toast((mode==='register'?'注册成功':'登录成功')+'，数据已同步（'+UNAME+'）');
+  }catch(e){
+    showAuthError((mode==='register'?'注册':'登录')+'失败：'+e.message);
+    btn.disabled=false; btn.textContent=oldTxt;
+  }
 }
 
 async function pullAccount(){
   const [ck,pl,g]=await Promise.all([api('/api/checkins'), api('/api/plan'), api('/api/gad7')]);
-  S.checks=ck.dates||[]; S.planDone=pl.done||{}; S.gad7=g.history||[];
+  S.checks=ck.dates||[]; S.planDone=pl.done||{}; S.gad7=g.history||[]; S.records=ck.records||[];
 }
 
 function doLogout(){
-  TOKEN=''; UNAME='';
+  TOKEN=''; UNAME=''; LOCAL_USER=''; LOCAL_NICK='';
   localStorage.removeItem('qingya_token'); localStorage.removeItem('qingya_user');
-  S={checks:[],planDone:{},gad7:[]};
+  localStorage.removeItem('qingya_local_user'); localStorage.removeItem('qingya_local_nick');
+  S={checks:[],planDone:{},gad7:[],records:[]};
   try{ localStorage.removeItem('qingya_today_action'); }catch(e){}
   updateStatus();
+  updateAuthUI();
   clearResults();
   renderCheck(); renderTodayAction(); renderGad7History();
-  alert('已退出登录，回到本机离线模式（你的云端数据仍安全保存在服务器）');
+  renderPlan(document.getElementById('planDir').value);
+  loadOverview();
+  if(document.getElementById('p-peer').classList.contains('on')) loadPeer();
+  toast('已退出登录，个人数据仍保存在本机');
 }
 
 function clearResults(){
@@ -845,11 +1299,13 @@ async function submitGad7(){
     renderGad7History();
   } else {
     r=gad7Interpret(answers.reduce((a,b)=>a+b,0));
+    try{ localStorage.setItem('qingya_gad7_last', String(r.score)); }catch(e){}
   }
   const el=document.getElementById('gad7Result');
   el.innerHTML=`<div class="gad7-score">得分：<b>${r.score}</b> / 21 · ${r.level}</div>
     <p style="font-size:13.5px;color:#374151;margin-top:6px;">${r.advice}</p>
-    ${r.suggestHelp?'<div class="engine-note" style="margin-top:8px;">🫂 分数偏高，建议寻求专业支持：学校心理中心 / 心理援助热线 12356</div>':''}`;
+    ${r.suggestHelp?'<div class="engine-note" style="margin-top:8px;">🫂 分数偏高，建议寻求专业支持：学校心理中心 / 心理援助热线 12356</div>':''}
+    <div class="next-actions"><button class="btn ghost" onclick="switchTab('peer');loadPeer();">🫂 看看我的位置</button></div>`;
   el.classList.add('show');
 }
 function renderGad7History(){
@@ -857,6 +1313,344 @@ function renderGad7History(){
   if(!el) return;
   if(!isAccount() || !S.gad7.length){ el.innerHTML=''; return; }
   el.innerHTML=`<div style="font-size:12.5px;color:var(--muted);">📈 历史记录（可做前后测对比）：${S.gad7.map(x=>x.created_at.slice(0,10)+' 得 '+x.score+' 分').join(' · ')}</div>`;
+}
+
+/* ============ ⑥ 同伴（匿名聚合：实时人数 / 我的位置 / 共鸣墙 / 树洞 / 坚持榜） ============ */
+function escapeHTML(s){
+  return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function openServerPanel(){ openAuth('login'); }
+function peerGateHTML(msg){
+  return `<div class="peer-hint">${msg}<br><span class="link" onclick="openAuth('login')">登录</span>后自动同步你的记录。</div>`;
+}
+
+/* 本机体验互动：没有后端时，「我也是 / 点赞 / 回应 / 树洞」也能留下痕迹 */
+const LPKEY='qingya_peer_local';
+function loadLocalPeer(){
+  try{
+    const o=JSON.parse(localStorage.getItem(LPKEY))||{};
+    return { pings:o.pings||[], whispers:o.whispers||[], likes:o.likes||{}, replies:o.replies||{} };
+  }catch(e){ return { pings:[], whispers:[], likes:{}, replies:{} }; }
+}
+function saveLocalPeer(o){ try{ localStorage.setItem(LPKEY, JSON.stringify(o)); }catch(e){} }
+function nowStamp(){
+  const d=new Date(); const p=n=>String(n).padStart(2,'0');
+  return p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());
+}
+function localNick(){ return LOCAL_NICK||nickFromName(LOCAL_USER)||'路过的小树苗'; }
+function peerFeedItems(lp){
+  const local=(lp.whispers||[]).map(x=>({
+    ...x, replies:(x.replies||[]).concat((lp.replies||{})[String(x.id)]||[])
+  }));
+  const demo=DEMO.whispers.map(x=>{
+    const liked=!!(lp.likes||{})[String(x.id)];
+    const extra=(lp.replies||{})[String(x.id)]||[];
+    return { ...x, liked, likes:(x.likes||0)+(liked?1:0), replies:(x.replies||[]).concat(extra) };
+  });
+  return local.concat(demo);
+}
+/* 本机模式下，按体验榜计算自己的名次（规则与后端一致） */
+function localBoardMe(){
+  const total=myChecks().length;
+  if(!total) return null;
+  const streak=calcStreak();
+  let rank=1;
+  for(const x of DEMO.board){
+    if(x.streak>streak || (x.streak===streak && x.total>total)) rank++;
+  }
+  return { rank, streak, total, inTop: rank<=DEMO.board.length };
+}
+
+/* 匿名昵称：由用户编号稳定生成，和颜文字一样有温度，又不暴露身份（与后端保持一致） */
+const NICK_ADJ = ['不想早起的','正在赶路的','偷偷努力的','慢慢变好的','不慌不忙的','偶尔走神的',
+  '三分钟热度的','晚睡冠军','认真生活的','温柔坚定的','刚刚开始的','有点慢热的'];
+const NICK_NOUN = ['小橘猫','向日葵','蒲公英','云朵','小树苗','月亮','柠檬水','小台灯',
+  '鲸鱼','小面包','风铃','薄荷糖','远山','小刺猬','橘子汽水','纸飞机'];
+function nickOfId(id){
+  const n=Number(id)||0;
+  return NICK_ADJ[n%NICK_ADJ.length]+NICK_NOUN[(n*7+3)%NICK_NOUN.length];
+}
+const AVATARS=['🌻','🌱','🍀','🌙','🐳','🦊','🐰','🐱','🍋','☁️','🪴','🌿','⭐','🍊','🐣','🫧','🌼','🍃'];
+function avatarOf(name){
+  let h=0; String(name||'').split('').forEach(c=>{ h=(h*31+c.charCodeAt(0))>>>0; });
+  return AVATARS[h%AVATARS.length];
+}
+
+/* 体验数据：后端未连接时（如纯静态托管）也能看到有温度的社区，全部为匿名聚合 */
+const DEMO = {
+  overview: { users: 20, demoUsers: 20, realUsers: 0, todayCheckins: 16, tasksDone: 14 },
+  scores: [9, 12, 6, 14, 4, 11, 8, 3, 7, 10, 5, 16, 13, 6, 2, 8, 1, 7, 9, 4],
+  bands: [
+    { key: 'normal', label: '正常', min: 0, max: 4 },
+    { key: 'mild', label: '轻度', min: 5, max: 9 },
+    { key: 'moderate', label: '中度', min: 10, max: 14 },
+    { key: 'severe', label: '重度', min: 15, max: 21 },
+  ],
+  topics: [
+    { key: 'ai', label: '担心 AI 替代', count: 4 },
+    { key: 'study', label: '学业压力', count: 4 },
+    { key: 'career', label: '就业焦虑', count: 3 },
+    { key: 'lost', label: '迷茫方向', count: 3 },
+    { key: 'social', label: '社交孤独', count: 2 },
+    { key: 'peer', label: '同辈比较', count: 2 },
+    { key: 'major', label: '专业困惑', count: 2 },
+  ],
+  board: [
+    { rank: 1, nick: nickOfId(1), streak: 9, total: 9 },
+    { rank: 2, nick: nickOfId(2), streak: 7, total: 7 },
+    { rank: 3, nick: nickOfId(3), streak: 6, total: 6 },
+    { rank: 4, nick: nickOfId(4), streak: 5, total: 5 },
+    { rank: 5, nick: nickOfId(5), streak: 5, total: 5 },
+    { rank: 6, nick: nickOfId(6), streak: 4, total: 4 },
+    { rank: 7, nick: nickOfId(7), streak: 4, total: 4 },
+    { rank: 8, nick: nickOfId(8), streak: 3, total: 3 },
+  ],
+  whispers: [
+    { id: 1, userId: 1, nick: nickOfId(1), createdAt: '11-04 10:20', content: '今天终于把拖了两周的任务做完了，原来看似难的事，开始就没那么难。', likes: 3, liked: false, replies: [{ userId: 6, nick: nickOfId(6), content: '我也是，拖到最后一天才敢开始。' }] },
+    { id: 2, userId: 2, nick: nickOfId(2), createdAt: '11-04 05:10', content: '第一次去学校的心理咨询，比想象中轻松，咨询师只是安静听我说了四十分钟。', likes: 2, liked: false, replies: [{ userId: 9, nick: nickOfId(9), content: '谢谢你愿意说出来，我也想去试试。' }] },
+    { id: 3, userId: 3, nick: nickOfId(3), createdAt: '11-03 16:40', content: '投了 12 份简历只回了 1 个，但我还是决定明天再改一版。', likes: 1, liked: false, replies: [{ userId: 11, nick: nickOfId(11), content: '我也是投了好多没回音，别急，慢慢来。' }] },
+    { id: 4, userId: 4, nick: nickOfId(4), createdAt: '11-03 12:30', content: '原来我不需要变成别人家的孩子，只要比昨天的自己好一点就够了。', likes: 0, liked: false, replies: [] },
+  ],
+};
+function demoPosition(score){
+  const scores=DEMO.scores, n=scores.length;
+  if(!score) return null;
+  const below=scores.filter(s=>s<score).length;
+  const equal=scores.filter(s=>s===score).length;
+  const band=DEMO.bands.find(b=>score>=b.min&&score<=b.max)||DEMO.bands[3];
+  const distribution=DEMO.bands.map(b=>{
+    const count=scores.filter(s=>s>=b.min&&s<=b.max).length;
+    return { key:b.key, label:b.label, count, pct: Math.round(count/n*100) };
+  });
+  return {
+    hasScore:true, score, level:band.label, bandKey:band.key,
+    percentile: Math.round(((below+equal/2)/n)*100),
+    bandPct: distribution.find(d=>d.key===band.key).pct,
+    sample:n, distribution,
+  };
+}
+function renderLive(el, ov){
+  if(!el) return;
+  if(!ov){ el.style.display='none'; return; }
+  el.style.display='flex';
+  el.innerHTML=`👥 已有 <b>${ov.users}</b> 位同学 · 今日 <b>${ov.todayCheckins}</b> 人打卡 · 累计完成 <b>${ov.tasksDone}</b> 个任务`;
+}
+async function loadOverview(){
+  const el=document.getElementById('homeLive');
+  if(!el) return;
+  if(!serverOn()||!SVR_UP){
+    renderLive(el, DEMO.overview);
+    renderLive(document.getElementById('peerLive'), DEMO.overview);
+    return;
+  }
+  try{
+    const ov=await api('/api/community/overview?date='+todayStr());
+    renderLive(el, ov);
+    renderLive(document.getElementById('peerLive'), ov);
+  }catch(e){
+    renderLive(el, DEMO.overview);
+    renderLive(document.getElementById('peerLive'), DEMO.overview);
+  }
+}
+async function loadPeer(){
+  const live=document.getElementById('peerLive');
+  const posEl=document.getElementById('peerPosition');
+  const topicsEl=document.getElementById('peerTopics');
+  const boardEl=document.getElementById('peerBoard');
+  const whisEl=document.getElementById('peerWhispers');
+
+  if(!serverOn()||!SVR_UP){
+    /* 未连接后端（例如纯静态托管）：用体验数据展示社区氛围 */
+    const lp=loadLocalPeer();
+    renderLive(live, DEMO.overview);
+    renderTopics({ topics: DEMO.topics.map(t=>({ ...t, count:t.count+(lp.pings.indexOf(t.key)>=0?1:0), mine:false, pinged:lp.pings.indexOf(t.key)>=0 })), mine:null });
+    renderBoard({ items: DEMO.board, me:localBoardMe() });
+    renderWhispers({ items: peerFeedItems(lp) });
+    const last=localStorage.getItem('qingya_gad7_last');
+    if(last) renderPosition(demoPosition(Number(last)));
+    else if(isLoggedIn()) posEl.innerHTML='<div class="gate">你还没有做过 GAD-7 情绪自测。做完后，这里会显示你在全体同学中的相对位置。</div>';
+    else posEl.innerHTML=peerGateHTML('登录后显示你的位置（也可以先做一次情绪自测）。');
+    return;
+  }
+
+  await loadOverview();
+  try{
+    const [tp, bd, wh]=await Promise.all([
+      api('/api/community/topics'),
+      api('/api/community/board'),
+      api('/api/community/whispers'),
+    ]);
+    renderTopics(tp); renderBoard(bd); renderWhispers(wh);
+    if(isAccount()){
+      renderPosition(await api('/api/community/position'));
+    } else if(isLoggedIn()){
+      const last=localStorage.getItem('qingya_gad7_last');
+      if(last) renderPosition(demoPosition(Number(last)));
+      else posEl.innerHTML='<div class="gate">你还没有做过 GAD-7 情绪自测。做完后，这里会显示你在全体同学中的相对位置。</div>';
+    } else {
+      posEl.innerHTML=peerGateHTML('登录后显示你的位置（需要先做过 GAD-7 情绪自测）。');
+    }
+  }catch(e){
+    live.innerHTML='读取失败：'+escapeHTML(e.message)+'（可稍后刷新重试）';
+  }
+}
+function bandColor(k){ return {normal:'#10b981',mild:'#f59e0b',moderate:'#f97316',severe:'#dc2626'}[k]||'#94a3b8'; }
+function renderPosition(p){
+  const el=document.getElementById('peerPosition');
+  if(!p.hasScore){
+    el.innerHTML=`<div class="gate">你还没有做过 GAD-7 情绪自测，做完后就能看到「你在全体同学中的相对位置」。<br>这里只展示聚合数据，不暴露任何人的分数与身份。</div>`;
+    return;
+  }
+  const bands=p.distribution||[];
+  el.innerHTML=`
+    <div class="pos-line">你 <b>${p.score}</b> 分（${p.level}），处于全体第 <b>${p.percentile}</b> 百分位，和 <b>${p.bandPct}%</b> 的同学同属「${p.level}」区间。</div>
+    <div class="dist-bar">${bands.map(b=>`<i class="${b.key}" style="width:${b.pct}%" title="${b.label} ${b.count} 人">${b.pct>=8?b.pct+'%':''}</i>`).join('')}</div>
+    <div class="dist-legend">${bands.map(b=>`<span><i class="cdot" style="background:${bandColor(b.key)}"></i>${b.label} ${b.count} 人（${b.pct}%）</span>`).join('')}</div>
+    <p class="tips">当前共有 ${p.sample} 位同学完成过自测。百分位只代表相对位置，不代表你好或不好。</p>`;
+}
+function renderTopics(t){
+  const el=document.getElementById('peerTopics');
+  const mine=t.mine;
+  const head=mine
+    ? `<div class="engine-note">💚 和你一样担心「${mine.label}」的还有 ${Math.max(mine.count-1,0)} 人</div>`
+    : '';
+  const rows=(t.topics||[]).map(x=>`
+    <div class="topic-row ${x.mine?'mine':''}">
+      <div class="tl">${x.label}${x.mine?'<span style="font-size:12px;color:var(--green);"> · 你的主题</span>':''}
+        <div class="tc">${x.count} 人</div></div>
+      <button class="ping-btn ${x.pinged?'on':''}" ${isLoggedIn()?'':'disabled'} onclick="pingTopic('${x.key}')">${x.pinged?'✓ 已共鸣':'我也是'}</button>
+    </div>`).join('');
+  el.innerHTML=head+`<div class="topic-list">${rows}</div>`+
+    (isLoggedIn()?'':'<p class="tips">登录后可以点「我也是」，让和你一样的人知道你也在。</p>')+
+    `<p class="tips">🔒 只统计主题人数，不展示任何人的原文。</p>`;
+}
+function rankEncourage(me){
+  const r=me.rank;
+  if(r===1) return '太棒了！你正站在榜首，这份坚持值得被看见，别松劲。';
+  if(r===2) return '离第一名只差一点点，再坚持一天，榜首可能就是你的。';
+  if(r===3) return '你已经站上领奖台，稳住这个节奏，后面的人正在追你。';
+  if(r<=10) return '已经很靠前啦，再坚持 3 天，就能超过前面几位。';
+  if(r<=20) return '稳住节奏，每天一小步，名次会慢慢往上走。';
+  return '别急，坚持打卡的人会越来越多；你只需要比昨天的自己多走一步。';
+}
+function renderBoard(b){
+  const el=document.getElementById('peerBoard');
+  const meHTML = b.me
+    ? `<div class="my-rank">
+         <div class="mr-num">#${b.me.rank}</div>
+         <div class="mr-txt">
+           <b>${b.me.rank<=3?'🎉 ':''}你排在第 ${b.me.rank} 名</b>
+           <span>${rankEncourage(b.me)}</span>
+           <span class="mr-sub">连续 ${b.me.streak} 天 · 累计 ${b.me.total} 天</span>
+         </div>
+       </div>`
+    : `<div class="my-rank empty" onclick="switchTab('check')">
+         <div class="mr-num">--</div>
+         <div class="mr-txt"><b>你还没有上榜</b><span>完成今天的第一次「行动打卡」，就能看到自己的名次和鼓励。</span></div>
+       </div>`;
+  if(!b.items||!b.items.length){
+    el.innerHTML=meHTML+`<div class="gate">还没有人打卡。完成第一次「行动打卡」后，榜单上就会出现你的匿名昵称。</div>`;
+    return;
+  }
+  const max=Math.max(...b.items.map(x=>x.total||0),1);
+  const medals=['🥇','🥈','🥉'];
+  el.innerHTML=meHTML+`<ul class="board-list">${b.items.map(x=>`
+      <li class="${x.rank<=3?'top r'+x.rank:''} ${x.isMe?'me':''}">
+        <div class="rk">${x.rank<=3?medals[x.rank-1]:x.rank}</div>
+        <div class="av">${avatarOf(x.nick)}</div>
+        <div class="ninfo">
+          <div class="nk">${escapeHTML(x.nick)}${x.isMe?'<span class="you">我</span>':''}</div>
+          <div class="st">连续 ${x.streak} 天 · 累计 ${x.total} 天</div>
+        </div>
+        <div class="prog"><i style="width:${Math.round((x.total||0)/max*100)}%"></i></div>
+      </li>`).join('')}</ul>`+
+    `<p class="tips">只展示正向行为，昵称由系统随机生成，不显示任何账号信息。</p>`;
+}
+function renderWhispers(w){
+  const el=document.getElementById('peerWhispers');
+  if(!w.items||!w.items.length){
+    el.innerHTML=`<div class="gate">树洞里还没有声音。写第一句吧，全部匿名。</div>`;
+    return;
+  }
+  el.innerHTML=w.items.map(x=>`
+    <div class="whisper">
+      <div class="wh-head"><span>${avatarOf(x.nick)} ${escapeHTML(x.nick)}</span><span>${x.createdAt||''}</span></div>
+      <div class="wh-body">${escapeHTML(x.content)}</div>
+      <div class="wh-act">
+        <button onclick="likeWhisper(${x.id})">👍 ${x.likes}${x.liked?' · 已赞':''}</button>
+        <button onclick="replyWhisper(${x.id})">💬 回应${x.replies.length?'（'+x.replies.length+'）':''}</button>
+      </div>
+      ${x.replies.length?`<div class="wh-replies">${x.replies.map(r=>`<div>${avatarOf(r.nick)} <b>${escapeHTML(r.nick)}</b>：${escapeHTML(r.content)}</div>`).join('')}</div>`:''}
+    </div>`).join('');
+}
+async function pingTopic(key){
+  if(!isLoggedIn()){ toast('登录后才能点「我也是」'); openAuth('login'); return; }
+  if(!isAccount()){
+    const lp=loadLocalPeer();
+    if(lp.pings.indexOf(key)>=0){ toast('你已经共鸣过这个主题了'); return; }
+    lp.pings.push(key); saveLocalPeer(lp);
+    await loadPeer();
+    toast('已记录你的共鸣，谢谢你愿意说出来');
+    return;
+  }
+  try{ await api('/api/community/topics/'+encodeURIComponent(key)+'/ping',{method:'POST'}); await loadPeer(); }
+  catch(e){ toast('操作失败：'+e.message); }
+}
+async function postWhisper(){
+  if(!isLoggedIn()){ toast('登录后才能发布树洞'); openAuth('login'); return; }
+  const ta=document.getElementById('whisperText');
+  const v=ta.value.trim();
+  if(!v){ toast('先写一句吧'); return; }
+  if(v.length>300){ toast('最多 300 字'); return; }
+  if(!isAccount()){
+    const lp=loadLocalPeer();
+    lp.whispers.unshift({ id:'L'+Date.now(), nick:localNick(), createdAt:nowStamp(), content:v, likes:0, liked:false, replies:[] });
+    saveLocalPeer(lp);
+    ta.value='';
+    await loadPeer();
+    toast('已匿名发布');
+    return;
+  }
+  try{
+    await api('/api/community/whispers',{method:'POST',body:{content:v}});
+    ta.value='';
+    await loadPeer();
+    toast('已匿名发布');
+  }catch(e){ toast('发布未通过：'+e.message); }
+}
+async function likeWhisper(id){
+  if(!isLoggedIn()){ toast('登录后才能点赞'); openAuth('login'); return; }
+  if(!isAccount()){
+    const lp=loadLocalPeer(); const wid=String(id);
+    const own=lp.whispers.find(w=>String(w.id)===wid);
+    if(own){ if(!own.liked){ own.liked=true; own.likes=(own.likes||0)+1; } }
+    else if(!lp.likes[wid]){ lp.likes[wid]=true; }
+    saveLocalPeer(lp); await loadPeer();
+    return;
+  }
+  try{ await api('/api/community/whispers/'+id+'/like',{method:'POST'}); await loadPeer(); }
+  catch(e){ toast('操作失败：'+e.message); }
+}
+async function replyWhisper(id){
+  if(!isLoggedIn()){ toast('登录后才能回应'); openAuth('login'); return; }
+  const v=prompt('写下你的回应（匿名，最多 120 字）');
+  if(v===null) return;
+  const txt=v.trim();
+  if(!txt){ toast('回应不能为空'); return; }
+  if(txt.length>120){ toast('回应请控制在 120 字以内'); return; }
+  if(!isAccount()){
+    const lp=loadLocalPeer(); const wid=String(id);
+    if(!lp.replies[wid]) lp.replies[wid]=[];
+    lp.replies[wid].push({ nick:localNick(), content:txt });
+    saveLocalPeer(lp); await loadPeer();
+    toast('已匿名回应');
+    return;
+  }
+  try{
+    await api('/api/community/whispers/'+id+'/reply',{method:'POST',body:{content:txt}});
+    await loadPeer();
+    toast('已匿名回应');
+  }catch(e){ toast('回应未通过：'+e.message); }
 }
 
 /* ============ 数据导出 / 导入 ============ */
@@ -893,19 +1687,40 @@ document.querySelectorAll('nav button').forEach(b=>{
     document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
     b.classList.add('on');
     document.getElementById('p-'+b.dataset.p).classList.add('on');
+    const p=b.dataset.p;
+    if(p==='plan') renderPlan(document.getElementById('planDir').value);
+    if(p==='peer') loadPeer();
   });
 });
 
 /* 初始化 */
 (async function init(){
+  /* 自动识别后端：先试同源，再试代码里预置的云端地址；都没有就本机模式 */
+  const probe=async base=>{
+    try{
+      const r=await fetch(base.replace(/\/+$/,'')+'/api/health',{cache:'no-store'});
+      if(r.ok){ const h=await r.json(); if(h&&h.name==='青芽后端') return true; }
+    }catch(e){}
+    return false;
+  };
+  if(!SVR && /^http/.test(location.protocol) && await probe(location.origin)){
+    SVR=location.origin; localStorage.setItem('qingya_server',SVR);
+  }
+  if(!SVR && CLOUD_API && await probe(CLOUD_API)){
+    SVR=CLOUD_API.replace(/\/+$/,''); localStorage.setItem('qingya_server',SVR);
+  }
   renderGad7Form();
   if(TOKEN && SVR){
-    try{ await pullAccount(); }catch(e){ /* 服务器不可达/令牌失效：仍按云端空数据显示，不串台 */ }
+    try{ await pullAccount(); }catch(e){ /* 服务器不可达/令牌失效：按云端空数据显示，不串台 */ }
   }
+  updateAuthUI();
   renderCheck();
   renderTodayAction();
   renderGad7History();
+  renderPlan(document.getElementById('planDir').value);
   await refreshStatus();
+  await loadOverview();
+  if(document.getElementById('p-peer').classList.contains('on')) await loadPeer();
 })();
 </script>
 </body>
