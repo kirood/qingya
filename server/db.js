@@ -446,6 +446,67 @@ function seedDemoUsers() {
 
 seedDemoUsers();
 
+/* ---- 活用户：每天让一批体验用户产生新数据，保证社区看起来是"活的" ----
+   幂等：同一天重复调用不会重复写入（打卡按 user+date 去重，树洞当天已有则跳过） */
+const DAILY_WHISPERS = [
+  '今天完成了本周第一个小目标，虽然很小，但心里踏实多了。',
+  '早起跑了 3 公里，发现清晨的校园原来这么安静。',
+  '把拖延了两周的论文大纲写完了，开始果然是最难的部分。',
+  '情绪自测做了第二次，比上个月降了 2 分，慢慢来。',
+  '跟学长聊了半小时职业方向，没那么迷茫了。',
+  '坚持打卡第 5 天，原来习惯真的可以一点点养成。',
+  '投了 3 份实习简历，不管结果如何，至少迈出了一步。',
+  '试了番茄工作法，专注了 4 个番茄钟，效率翻倍。',
+  '把「我要变好」换成「我今天做一件事」之后，焦虑少了一半。',
+  '今天主动约了朋友吃饭，独处太久真的会内耗。',
+];
+const DAILY_REPLIES = [
+  '我也是，开始之后就没那么难了。',
+  '看到你在坚持，我也想试试。',
+  '慢慢来，比昨天的自己好一点就够了。',
+  '太棒了，向你学习。',
+  '这句话我抄下来了。',
+];
+
+function ensureDailyActivity() {
+  const ids = db.prepare('SELECT id FROM users WHERE demo = 1 ORDER BY id').all().map(r => r.id);
+  if (!ids.length) return;
+  const today = dateOffset(0);
+  const doy = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+
+  /* 1) 每天轮换 10-16 个体验用户打卡（带不同内容） */
+  const insCheckin = db.prepare('INSERT OR IGNORE INTO checkins (user_id, date, content) VALUES (?, ?, ?)');
+  const active = 10 + (doy % 7);
+  for (let k = 0; k < active; k++) {
+    const idx = (doy * 7 + k * 3) % ids.length;
+    insCheckin.run(ids[idx], today, DEMO_CHECKINS[(idx + doy) % DEMO_CHECKINS.length]);
+  }
+
+  /* 2) 当天若还没有体验用户的树洞，补 1-2 条（含点赞、偶尔带回应） */
+  const n = db.prepare(
+    "SELECT COUNT(*) AS n FROM whispers w JOIN users u ON u.id = w.user_id WHERE u.demo = 1 AND date(w.created_at, '+8 hours') = date('now', '+8 hours')"
+  ).get().n;
+  if (n > 0) return;
+
+  const count = 1 + (doy % 2);
+  const insWhisper = db.prepare("INSERT INTO whispers (user_id, content, created_at) VALUES (?, ?, datetime('now', ?))");
+  const insLike = db.prepare('INSERT OR IGNORE INTO whisper_likes (whisper_id, user_id) VALUES (?, ?)');
+  const insReply = db.prepare('INSERT INTO whisper_replies (whisper_id, user_id, content) VALUES (?, ?, ?)');
+  for (let k = 0; k < count; k++) {
+    const author = ids[(doy * 5 + k * 9) % ids.length];
+    const txt = DAILY_WHISPERS[(doy + k * 3) % DAILY_WHISPERS.length];
+    const info = insWhisper.run(author, txt, '-' + (2 + k * 4) + ' hours');
+    const wid = Number(info.lastInsertRowid);
+    const likes = 1 + ((doy + k) % 3);
+    for (let j = 0; j < likes; j++) insLike.run(wid, ids[(doy + k + j + 3) % ids.length]);
+    if ((doy + k) % 3 === 0) {
+      insReply.run(wid, ids[(doy + k + 7) % ids.length], DAILY_REPLIES[(doy + k) % DAILY_REPLIES.length]);
+    }
+  }
+}
+
+ensureDailyActivity();
+
 /* ---- 落地数据（统计，供答辩/材料用） ---- */
 function stats() {
   const users = db.prepare('SELECT COUNT(*) AS n FROM users').get().n;
@@ -469,4 +530,5 @@ module.exports = {
   addWhisper, listWhispers, likeWhisper, whisperExists, addWhisperReply,
   boardData,
   stats,
+  ensureDailyActivity,
 };

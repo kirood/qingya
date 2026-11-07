@@ -258,8 +258,9 @@ function todayStr() {
   return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
 }
 
-/* 实时数据条：多少人在用 */
+/* 实时数据条：多少人在用（顺带刷新当日活用户数据） */
 app.get('/api/community/overview', (req, res) => {
+  store.ensureDailyActivity();
   const s = store.stats();
   const date = String(req.query.date || todayStr());
   res.json({
@@ -333,6 +334,7 @@ app.post('/api/community/topics/:key/ping', auth, (req, res) => {
 
 /* 匿名树洞：发布 / 点赞 / 回应（含敏感词与隐私审核） */
 app.get('/api/community/whispers', optionalAuth, (req, res) => {
+  store.ensureDailyActivity();
   const items = store.listWhispers(req.user ? req.user.id : null, 30).map(w => ({
     id: w.id,
     nick: nickOf(w.userId),
