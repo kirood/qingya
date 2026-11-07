@@ -1130,23 +1130,38 @@ async function api(path, opts={}){
   const headers = {};
   if(opts.body) headers['Content-Type']='application/json';
   if(TOKEN) headers['Authorization']='Bearer '+TOKEN;
-  const res = await fetch(apiBase()+path, {method:opts.method||'GET', headers, body: opts.body?JSON.stringify(opts.body):undefined});
+  const ctl = opts.timeout ? new AbortController() : null;
+  const tm = ctl ? setTimeout(()=>ctl.abort(), opts.timeout) : null;
+  let res;
+  try{
+    res = await fetch(apiBase()+path, {
+      method: opts.method||'GET', headers,
+      body: opts.body?JSON.stringify(opts.body):undefined,
+      signal: ctl ? ctl.signal : undefined,
+    });
+  }finally{ if(tm) clearTimeout(tm); }
   const data = await res.json().catch(()=>({}));
   if(!res.ok) throw new Error(data.error || ('HTTP '+res.status));
   return data;
 }
 
+/* 网络类错误（服务器冷启动/断网），区别于「用户名或密码错误」这类业务错误 */
+function isConnectError(e){
+  const m=String((e&&e.message)||e||'');
+  return e instanceof TypeError || /Failed to fetch|NetworkError|Load failed|abort|HTTP (502|503|504)/i.test(m);
+}
+
 async function refreshStatus(){
   if(!serverOn()){ SVR_UP=false; SVR_ONLINE=false; }
-  else { try{ const h=await api('/api/health'); SVR_UP=true; SVR_ONLINE=!!h.online; }catch(e){ SVR_UP=false; SVR_ONLINE=false; } }
+  else { try{ const h=await api('/api/health',{timeout:15000}); SVR_UP=true; SVR_ONLINE=!!h.online; }catch(e){ SVR_UP=false; SVR_ONLINE=false; } }
   updateStatus();
 }
 function updateStatus(){
   const txt=document.getElementById('engineText');
   const dot=document.getElementById('engineBadge').querySelector('.dot');
-  if(isAccount()){ txt.textContent = SVR_UP ? ('云端同步 · '+UNAME) : '云端模式 · 服务器不可达'; dot.style.background='var(--amber)'; }
+  if(isAccount()){ txt.textContent = SVR_UP ? ('云端同步 · '+UNAME) : '正在连接云端…（首次约 30-60 秒）'; dot.style.background='var(--amber)'; }
   else if(LOCAL_USER){ txt.textContent='已登录 · 数据保存在本机'; dot.style.background='var(--green2)'; }
-  else if(serverOn()){ txt.textContent = SVR_UP ? (SVR_ONLINE?'在线增强 · 免登录':'已连服务器 · 免登录') : '服务器不可达 · 已回本机'; dot.style.background='var(--green2)'; }
+  else if(serverOn()){ txt.textContent = SVR_UP ? (SVR_ONLINE?'在线增强 · 免登录':'已连服务器 · 免登录') : '正在唤醒云端…'; dot.style.background='var(--green2)'; }
   else { txt.textContent='离线可用 · 数据仅存本机'; dot.style.background='var(--green2)'; }
 }
 
@@ -1218,6 +1233,10 @@ function toast(msg){
 
 async function localSignIn(mode){
   const u=document.getElementById('authUser').value.trim();
+  /* 明确选择本机模式时，清掉云端登录态，避免「以为在本机、实际还在旧云端账号」 */
+  TOKEN=''; UNAME='';
+  try{ localStorage.removeItem('qingya_token'); localStorage.removeItem('qingya_user'); }catch(e){}
+  S={checks:[],planDone:{},gad7:[],records:[]};
   LOCAL_USER=u; LOCAL_NICK=nickFromName(u);
   try{
     localStorage.setItem('qingya_local_user',LOCAL_USER);
@@ -1237,14 +1256,21 @@ async function doAuth(mode){
   if(u.length<2||u.length>20){ showAuthError('用户名需 2-20 个字符'); return; }
   if(p.length<6){ showAuthError('密码至少 6 位'); return; }
 
-  /* 没有后端（或临时连不上）时：使用本机账号，登录后数据仍保存在这台设备，界面与云端一致 */
-  if(serverOn() && !SVR_UP) await refreshStatus();
-  if(!serverOn() || !SVR_UP){ await localSignIn(mode); return; }
+  /* 只有完全没有配置云端地址时，才用本机账号。
+     配置了云端就始终走云端登录：绝不因为服务器冷启动而悄悄退回本机，
+     否则手机和电脑会各自使用不同账号，数据永远无法同步。 */
+  if(!serverOn()){ await localSignIn(mode); return; }
 
   const btn=document.getElementById('authSubmit');
   const oldTxt=btn.textContent;
-  btn.disabled=true; btn.textContent='同步中…';
+  btn.disabled=true;
+  showAuthError('');
+  btn.textContent = SVR_UP ? '同步中…' : '正在唤醒云端…（首次约 30-60 秒）';
   try{
+    if(!SVR_UP){
+      await refreshStatus();                 // 先探活，顺手唤醒免费实例
+      btn.textContent='同步中…';
+    }
     const r=await api('/api/'+mode, {method:'POST', body:{username:u, password:p}});
     TOKEN=r.token; UNAME=r.username; LOCAL_USER=''; LOCAL_NICK='';
     try{
@@ -1253,6 +1279,8 @@ async function doAuth(mode){
     localStorage.setItem('qingya_token',TOKEN); localStorage.setItem('qingya_user',UNAME);
     S={checks:[],planDone:{},gad7:[],records:[]};          // 清空内存，杜绝串台
     try{ localStorage.removeItem('qingya_today_action'); }catch(e){}
+    /* 把「本机模式」期间产生的数据搬到云端，避免换设备后看不到旧记录 */
+    const moved=await migrateLocalData();
     await pullAccount();
     await refreshStatus();
     closeAuth();
@@ -1262,11 +1290,69 @@ async function doAuth(mode){
     renderPlan(document.getElementById('planDir').value);
     await loadOverview();
     if(document.getElementById('p-peer').classList.contains('on')) await loadPeer();
-    toast((mode==='register'?'注册成功':'登录成功')+'，数据已同步（'+UNAME+'）');
+    const base=(mode==='register'?'注册成功':'登录成功')+'，数据已同步（'+UNAME+'）';
+    toast(base + (moved ? '，已把本机 '+moved+' 条记录上传到云端' : ''));
   }catch(e){
-    showAuthError((mode==='register'?'注册':'登录')+'失败：'+e.message);
     btn.disabled=false; btn.textContent=oldTxt;
+    const net=isConnectError(e);
+    showAuthError(net
+      ? '云端暂时连不上（免费服务器首次唤醒约需 30-60 秒），请稍等再点一次登录。'
+      : (mode==='register'?'注册':'登录')+'失败：'+e.message);
+    if(net){
+      /* 明确询问是否退回本机模式，绝不默认悄悄降级 */
+      const goLocal=confirm('云端现在连不上。\n\n点「确定」= 先用本机模式登录（数据只保存在这台设备，不会同步到其他设备）；点「取消」= 稍后重试云端登录。');
+      if(goLocal) await localSignIn(mode);
+    }
   }
+}
+
+/* 把「本机模式」期间的数据迁移到云端账号（云端登录成功后自动执行）
+   幂等：打卡按「用户+日期」覆盖写入，共鸣按「用户+主题」去重，树洞用 synced 标记防重复 */
+async function migrateLocalData(){
+  let moved=0;
+  /* ① 打卡（含每天写下的内容） */
+  try{
+    const dates=loadChecks(); const content=loadCheckContent();
+    for(const d of dates){
+      const txt=String(content[d]||'').trim();
+      if(!txt) continue;
+      try{ await api('/api/checkins',{method:'POST',body:{date:d, content:txt}}); moved++; }catch(e){}
+    }
+  }catch(e){}
+  /* ② 计划完成标记（先比对云端已有，避免被 toggle 掉） */
+  try{
+    const local=loadPlanDone(); const dirs=Object.keys(local);
+    if(dirs.length){
+      const cloud=await api('/api/plan').catch(()=>({done:{}}));
+      for(const dir of dirs){
+        const done=(cloud.done&&cloud.done[dir])||[];
+        for(const idx of (local[dir]||[])){
+          if(done.indexOf(idx)>=0) continue;
+          try{ await api('/api/plan',{method:'POST',body:{dir, index:idx}}); moved++; }catch(e){}
+        }
+      }
+    }
+  }catch(e){}
+  /* ③ 本机发布的树洞（成功后标记 synced，重复登录不会重复发布） */
+  try{
+    const lp=loadLocalPeer(); let changed=false;
+    for(const w of lp.whispers){
+      if(w.synced) continue;
+      try{
+        await api('/api/community/whispers',{method:'POST',body:{content:w.content}});
+        w.synced=true; changed=true; moved++;
+      }catch(e){}
+    }
+    if(changed) saveLocalPeer(lp);
+  }catch(e){}
+  /* ④ 点过的「我也是」（服务端按 用户+主题 去重，重复调用安全） */
+  try{
+    const lp=loadLocalPeer();
+    for(const key of (lp.pings||[])){
+      try{ await api('/api/community/topics/'+encodeURIComponent(key)+'/ping',{method:'POST'}); }catch(e){}
+    }
+  }catch(e){}
+  return moved;
 }
 
 async function pullAccount(){
@@ -1692,7 +1778,7 @@ async function postWhisper(){
     saveLocalPeer(lp);
     ta.value='';
     await loadPeer();
-    toast('已匿名发布');
+    toast('已匿名发布（保存在本机，登录云端后会自动同步）');
     return;
   }
   try{
@@ -1779,32 +1865,58 @@ document.querySelectorAll('nav button').forEach(b=>{
 
 /* 初始化 */
 (async function init(){
-  /* 自动识别后端：先试同源，再试代码里预置的云端地址；都没有就本机模式 */
-  const probe=async base=>{
+  /* ① 决定云端地址：只要代码里配置了 CLOUD_API 就默认用它，
+     不再因为探测失败而留空（那会让页面悄悄进入本机模式，手机与电脑各存一份数据）。
+     探测只用于「页面本身由后端托管」（如 http://localhost:3000）时优先同源。 */
+  const probe=async (base, ms)=>{
+    base=String(base||'').replace(/\/+$/,'');
+    if(!base) return false;
+    const ctl=new AbortController();
+    const tm=setTimeout(()=>ctl.abort(), ms||2500);
     try{
-      const r=await fetch(base.replace(/\/+$/,'')+'/api/health',{cache:'no-store'});
+      const r=await fetch(base+'/api/health',{cache:'no-store',signal:ctl.signal});
       if(r.ok){ const h=await r.json(); if(h&&h.name==='青芽后端') return true; }
     }catch(e){}
+    finally{ clearTimeout(tm); }
     return false;
   };
-  if(!SVR && /^http/.test(location.protocol) && await probe(location.origin)){
-    SVR=location.origin; localStorage.setItem('qingya_server',SVR);
-  }
-  if(!SVR && CLOUD_API && await probe(CLOUD_API)){
+  if(SVR && /(^|\/\/)(localhost|127\.0\.0\.1)(:|\/|$)/.test(SVR)
+     && !/^(localhost|127\.0\.0\.1)$/.test(location.hostname) && CLOUD_API){
+    /* 换到线上环境后，清掉本机测试留下的 localhost 地址 */
     SVR=CLOUD_API.replace(/\/+$/,''); localStorage.setItem('qingya_server',SVR);
   }
-  renderGad7Form();
-  if(TOKEN && SVR){
-    try{ await pullAccount(); }catch(e){ /* 服务器不可达/令牌失效：按云端空数据显示，不串台 */ }
+  if(!SVR){
+    const sameOrigin = /^http/.test(location.protocol) ? await probe(location.origin, 2500) : false;
+    if(sameOrigin) SVR=location.origin;
+    else if(CLOUD_API) SVR=CLOUD_API.replace(/\/+$/,'');
+    if(SVR) localStorage.setItem('qingya_server',SVR);
   }
+
+  /* ② 先渲染界面：不等待任何网络请求，云端冷启动也不会白屏 */
+  renderGad7Form();
   updateAuthUI();
-  renderCheck();
-  renderTodayAction();
-  renderGad7History();
+  renderCheck(); renderTodayAction(); renderGad7History();
   renderPlan(document.getElementById('planDir').value);
-  await refreshStatus();
-  await loadOverview();
-  if(document.getElementById('p-peer').classList.contains('on')) await loadPeer();
+  loadOverview();
+
+  /* ③ 后台连接云端：拉取账号数据 → 刷新界面（冷启动可能要 30-60 秒） */
+  refreshStatus().then(async ()=>{
+    if(isAccount() && SVR_UP){
+      try{ await pullAccount(); }catch(e){}
+      renderCheck(); renderTodayAction(); renderGad7History();
+      renderPlan(document.getElementById('planDir').value);
+    }
+    await loadOverview();
+    if(document.getElementById('p-peer').classList.contains('on')) await loadPeer();
+    /* 提醒：本机模式的老账号可以登录云端，把数据同步到其他设备 */
+    if(SVR_UP && LOCAL_USER && !TOKEN){
+      let shown=''; try{ shown=localStorage.getItem('qingya_upgrade_hint')||''; }catch(e){}
+      if(shown!==todayStr()){
+        try{ localStorage.setItem('qingya_upgrade_hint', todayStr()); }catch(e){}
+        toast('这台设备上还有本机账号「'+LOCAL_USER+'」：用同一个账号登录云端，数据就会同步到手机和电脑。');
+      }
+    }
+  });
 })();
 </script>
 </body>
