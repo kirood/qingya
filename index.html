@@ -97,6 +97,18 @@
 
   .sec-title{display:flex; align-items:center; gap:9px; font-size:16.5px; font-weight:800; margin:4px 0 12px;}
   .sec-title .bar{width:4px; height:18px; border-radius:2px; background:linear-gradient(var(--green),var(--teal));}
+  .hero-cta{display:flex; gap:12px; justify-content:center; margin-top:22px; flex-wrap:wrap;}
+  .hero-cta .btn{padding:12px 26px; font-size:14.5px;}
+  .feat-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:12px;}
+  .feat-card{display:flex; flex-direction:column; gap:6px; padding:16px 16px 14px; border-radius:16px;
+    background:linear-gradient(180deg,#ffffff,#fafcfa); border:1px solid var(--line); cursor:pointer;
+    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;}
+  .feat-card:hover{transform:translateY(-3px); border-color:#a7f3d0;
+    box-shadow:0 12px 28px rgba(16,185,129,.13);}
+  .feat-card .fc-ico{width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+    font-size:20px; color:#fff; box-shadow:0 5px 12px rgba(0,0,0,.12);}
+  .feat-card b{font-size:14.5px; color:#1f2937;}
+  .feat-card span{font-size:12px; color:var(--muted); line-height:1.6;}
   .steps{list-style:none; margin-top:8px; counter-reset:none;}
   .steps li{display:flex; gap:14px; align-items:flex-start; padding:11px 0;}
   .steps .no{flex:0 0 auto; width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,var(--green),var(--teal));
@@ -338,6 +350,7 @@
     header{flex-wrap:nowrap;} .brand .sub{display:none;} .badge{display:none;}
     .uname{max-width:64px;}
     .board-list .prog{display:none;} .board-list li{padding:9px 11px;} .ninfo{min-width:0;}
+    .feat-grid{grid-template-columns:repeat(2,1fr);}
   }
 </style>
 </head>
@@ -374,7 +387,7 @@
       <div class="hero-logo">🌱</div>
       <div class="hero-title"><em>青芽</em></div>
       <div class="hero-tag">帮你把「迷茫和焦虑」变成「看得见的行动」</div>
-      <p class="hero-desc">不管你是中文、商科、理工还是艺术专业——写下你的困扰，青芽陪你一步步<strong>认清自己 → 拆解焦虑 → 制定计划 → 坚持打卡</strong>，把想不通的事做成做得到的事。</p>
+      <p class="hero-desc">写下你的困扰，青芽陪你一步步<strong>认清自己 → 拆解焦虑 → 制定计划 → 坚持打卡</strong>，再到「同伴」里发现：原来不是我一个人。</p>
       <div class="flow">
         <div class="flow-step" onclick="switchTab('portrait')"><span class="no">1</span><b>认识自己</b><span>生成能力画像</span></div>
         <div class="arrow">→</div>
@@ -384,18 +397,52 @@
         <div class="arrow">→</div>
         <div class="flow-step" onclick="switchTab('check')"><span class="no">4</span><b>坚持打卡</b><span>让坚持可见</span></div>
       </div>
-      <div class="hero-meta"><span>🎯 免费</span><span>🔒 数据只属于你</span><span>☁️ 登录可同步</span><span>🫂 危机守护</span><span>🤝 不懂技术也能用</span></div>
+      <div class="hero-meta"><span>🎯 免费</span><span>🔒 数据只属于你</span><span>☁️ 登录可同步</span><span>🫂 危机守护</span></div>
+      <div class="hero-cta">
+        <button class="btn" onclick="switchTab('portrait')">✨ 开始认识自己</button>
+        <button class="btn ghost" onclick="switchTab('peer')">🫂 看看同伴</button>
+      </div>
       <div class="live-strip" id="homeLive" style="display:none;"></div>
+    </div>
+
+    <div class="card">
+      <div class="sec-title"><span class="bar"></span>青芽能帮你做什么</div>
+      <div class="feat-grid">
+        <div class="feat-card" onclick="switchTab('portrait')">
+          <div class="fc-ico" style="background:linear-gradient(135deg,#10b981,#0d9488);">🎯</div>
+          <b>成长画像</b><span>回答 4 个问题，生成你的能力图谱</span>
+        </div>
+        <div class="feat-card" onclick="switchTab('anxiety')">
+          <div class="fc-ico" style="background:linear-gradient(135deg,#8b5cf6,#6366f1);">🧠</div>
+          <b>焦虑拆解</b><span>把烦恼拆成「可控 / 不可控 / 下一步」</span>
+        </div>
+        <div class="feat-card" onclick="switchTab('plan')">
+          <div class="fc-ico" style="background:linear-gradient(135deg,#f59e0b,#f97316);">📋</div>
+          <b>成长计划</b><span>方向你选、内容你写，一周小计划</span>
+        </div>
+        <div class="feat-card" onclick="switchTab('check')">
+          <div class="fc-ico" style="background:linear-gradient(135deg,#0ea5e9,#2563eb);">✅</div>
+          <b>行动打卡</b><span>每天记一件做成的小事，看见复利</span>
+        </div>
+        <div class="feat-card" onclick="switchTab('gad7')">
+          <div class="fc-ico" style="background:linear-gradient(135deg,#ec4899,#e11d48);">📊</div>
+          <b>情绪自测</b><span>GAD-7 专业量表，支持前后测对比</span>
+        </div>
+        <div class="feat-card" onclick="switchTab('peer')">
+          <div class="fc-ico" style="background:linear-gradient(135deg,#14b8a6,#059669);">🫂</div>
+          <b>同伴</b><span>匿名共鸣、树洞与坚持榜：你不是一个人</span>
+        </div>
+      </div>
     </div>
 
     <div class="card">
       <div class="sec-title"><span class="bar"></span>怎么用（三步）</div>
       <ol class="steps">
-        <li><span class="no">1</span><div><b>写一写</b><p>在「成长画像」或「焦虑拆解」里，用你的真实情况写下想法。</p></div></li>
-        <li><span class="no">2</span><div><b>跟着做</b><p>按给出的「下一步行动」或「7 天计划」，每天做一个小动作。</p></div></li>
-        <li><span class="no">3</span><div><b>打个卡</b><p>完成就在「行动打卡」点一下，看着坚持一点点累积。</p></div></li>
+        <li><span class="no">1</span><div><b>写一写</b><p>在「成长画像」或「焦虑拆解」里，写下你的真实想法。</p></div></li>
+        <li><span class="no">2</span><div><b>跟着做</b><p>按给出的「下一步行动」或 7 天小计划，每天做一个小动作。</p></div></li>
+        <li><span class="no">3</span><div><b>打个卡</b><p>完成就打卡，去「同伴」看看和你一样坚持的人。</p></div></li>
       </ol>
-      <p class="tips">💡 不登录也能用，数据只存在本机浏览器；登录后才会同步到你的账号，随时可以退出。</p>
+      <p class="tips">💡 不登录也能用，数据只存在本机；登录后自动同步，换设备接着用。</p>
     </div>
   </section>
 
@@ -525,8 +572,7 @@
 
   <footer>
     <div>「青芽」— 面向全体大学生的成长搭子 · 数绘青春「数智新技艺」参赛作品</div>
-    <div class="safe">🔒 未登录时所有信息仅保存在本机浏览器；登录后按账号严格隔离</div>
-    <div class="safe" style="font-size:11.5px;">ℹ️ 同伴区含少量系统体验用户数据，用于演示社区氛围，均为匿名聚合展示</div>
+    <div class="safe">🔒 数据只存本机，登录后按账号隔离 · 同伴区为匿名聚合展示</div>
     <details>
       <summary>📁 导出 / 导入我的数据（换设备不丢）</summary>
       <div class="api-note">
@@ -577,7 +623,7 @@
 <script>
 /* ============ 云端地址（只有开发者需要看到，用户无需填写） ============ */
 /* 部署好后端后，把 Render 地址填在下面这一行即可；留空则自动使用同源后端或本机模式。 */
-const CLOUD_API = '';   // 例：'https://qingya-api.onrender.com'
+const CLOUD_API = 'https://qingya-server.onrender.com';   // 例：'https://qingya-api.onrender.com'
 
 /* ============ 数据：能力维度与关键词映射 ============ */
 const DIMS = [
@@ -1342,7 +1388,7 @@ function peerFeedItems(lp){
   const local=(lp.whispers||[]).map(x=>({
     ...x, replies:(x.replies||[]).concat((lp.replies||{})[String(x.id)]||[])
   }));
-  const demo=DEMO.whispers.map(x=>{
+  const demo=demoWhispers().map(x=>{
     const liked=!!(lp.likes||{})[String(x.id)];
     const extra=(lp.replies||{})[String(x.id)]||[];
     return { ...x, liked, likes:(x.likes||0)+(liked?1:0), replies:(x.replies||[]).concat(extra) };
@@ -1355,10 +1401,11 @@ function localBoardMe(){
   if(!total) return null;
   const streak=calcStreak();
   let rank=1;
-  for(const x of DEMO.board){
+  const board=demoBoard();
+  for(const x of board){
     if(x.streak>streak || (x.streak===streak && x.total>total)) rank++;
   }
-  return { rank, streak, total, inTop: rank<=DEMO.board.length };
+  return { rank, streak, total, inTop: rank<=board.length };
 }
 
 /* 匿名昵称：由用户编号稳定生成，和颜文字一样有温度，又不暴露身份（与后端保持一致） */
@@ -1376,9 +1423,14 @@ function avatarOf(name){
   return AVATARS[h%AVATARS.length];
 }
 
-/* 体验数据：后端未连接时（如纯静态托管）也能看到有温度的社区，全部为匿名聚合 */
+/* 体验数据：随日期轮换、并叠加你自己行为的"活"数据（无后端时展示，全部为匿名聚合） */
+function doy(){ const d=new Date(); return Math.floor((d - new Date(d.getFullYear(),0,0)) / 86400000); }
+function stampAgo(daysAgo, hour, min){
+  const d=new Date(); d.setDate(d.getDate()-daysAgo);
+  const p=n=>String(n).padStart(2,'0');
+  return p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(hour)+':'+p(min);
+}
 const DEMO = {
-  overview: { users: 20, demoUsers: 20, realUsers: 0, todayCheckins: 16, tasksDone: 14 },
   scores: [9, 12, 6, 14, 4, 11, 8, 3, 7, 10, 5, 16, 13, 6, 2, 8, 1, 7, 9, 4],
   bands: [
     { key: 'normal', label: '正常', min: 0, max: 4 },
@@ -1386,32 +1438,62 @@ const DEMO = {
     { key: 'moderate', label: '中度', min: 10, max: 14 },
     { key: 'severe', label: '重度', min: 15, max: 21 },
   ],
-  topics: [
-    { key: 'ai', label: '担心 AI 替代', count: 4 },
-    { key: 'study', label: '学业压力', count: 4 },
-    { key: 'career', label: '就业焦虑', count: 3 },
-    { key: 'lost', label: '迷茫方向', count: 3 },
-    { key: 'social', label: '社交孤独', count: 2 },
-    { key: 'peer', label: '同辈比较', count: 2 },
-    { key: 'major', label: '专业困惑', count: 2 },
-  ],
-  board: [
-    { rank: 1, nick: nickOfId(1), streak: 9, total: 9 },
-    { rank: 2, nick: nickOfId(2), streak: 7, total: 7 },
-    { rank: 3, nick: nickOfId(3), streak: 6, total: 6 },
-    { rank: 4, nick: nickOfId(4), streak: 5, total: 5 },
-    { rank: 5, nick: nickOfId(5), streak: 5, total: 5 },
-    { rank: 6, nick: nickOfId(6), streak: 4, total: 4 },
-    { rank: 7, nick: nickOfId(7), streak: 4, total: 4 },
-    { rank: 8, nick: nickOfId(8), streak: 3, total: 3 },
-  ],
-  whispers: [
-    { id: 1, userId: 1, nick: nickOfId(1), createdAt: '11-04 10:20', content: '今天终于把拖了两周的任务做完了，原来看似难的事，开始就没那么难。', likes: 3, liked: false, replies: [{ userId: 6, nick: nickOfId(6), content: '我也是，拖到最后一天才敢开始。' }] },
-    { id: 2, userId: 2, nick: nickOfId(2), createdAt: '11-04 05:10', content: '第一次去学校的心理咨询，比想象中轻松，咨询师只是安静听我说了四十分钟。', likes: 2, liked: false, replies: [{ userId: 9, nick: nickOfId(9), content: '谢谢你愿意说出来，我也想去试试。' }] },
-    { id: 3, userId: 3, nick: nickOfId(3), createdAt: '11-03 16:40', content: '投了 12 份简历只回了 1 个，但我还是决定明天再改一版。', likes: 1, liked: false, replies: [{ userId: 11, nick: nickOfId(11), content: '我也是投了好多没回音，别急，慢慢来。' }] },
-    { id: 4, userId: 4, nick: nickOfId(4), createdAt: '11-03 12:30', content: '原来我不需要变成别人家的孩子，只要比昨天的自己好一点就够了。', likes: 0, liked: false, replies: [] },
-  ],
 };
+function demoOverview(){
+  const d=doy();
+  const myToday=myChecks().includes(todayStr());
+  return {
+    users: 20 + (isLoggedIn()?1:0),
+    demoUsers: 20,
+    realUsers: isLoggedIn()?1:0,
+    todayCheckins: 10 + (d%7) + (myToday?1:0),
+    tasksDone: 12 + (d%5) + myChecks().length,
+  };
+}
+function demoTopics(){
+  const d=doy();
+  return [
+    { key:'ai', label:'担心 AI 替代', count:4 },
+    { key:'study', label:'学业压力', count:4 },
+    { key:'career', label:'就业焦虑', count:3 },
+    { key:'lost', label:'迷茫方向', count:3 },
+    { key:'social', label:'社交孤独', count:2 },
+    { key:'peer', label:'同辈比较', count:2 },
+    { key:'major', label:'专业困惑', count:2 },
+  ].map((t,i)=>({ ...t, count:t.count + ((d+i)%2) }));
+}
+function demoBoard(){
+  const d=doy();
+  const base=[[1,9],[2,7],[3,6],[4,5],[5,5],[6,4],[7,4],[8,3]];
+  return base.map(([id,st],i)=>({ rank:i+1, nick:nickOfId(id),
+    streak: st + ((d+i)%3===0?1:0), total: st + ((d+i)%3===0?1:0) }));
+}
+const WHISPER_POOL=[
+  { c:'今天终于把拖了两周的任务做完了，原来看似难的事，开始就没那么难。', r:'我也是，拖到最后一天才敢开始。' },
+  { c:'第一次去学校的心理咨询，比想象中轻松，咨询师只是安静听我说了四十分钟。', r:'谢谢你愿意说出来，我也想去试试。' },
+  { c:'投了 12 份简历只回了 1 个，但我还是决定明天再改一版。', r:'我也是投了好多没回音，别急，慢慢来。' },
+  { c:'原来我不需要变成别人家的孩子，只要比昨天的自己好一点就够了。', r:null },
+  { c:'坚持背单词第 10 天，居然开始期待每天早上的那点仪式感。', r:'我也是，习惯养成后会上瘾。' },
+  { c:'今天去跑了 3 公里，出一身汗之后，脑子清醒了很多。', r:'运动真的有用，亲测。' },
+  { c:'把「我要变好」换成「我今天做一件事」之后，焦虑少了一半。', r:'这句我抄下来了，谢谢。' },
+  { c:'和家里打完电话，原来他们也在学着怎么关心我。', r:null },
+];
+function demoWhispers(){
+  const d=doy();
+  const out=[];
+  for(let i=0;i<4;i++){
+    const idx=(d+i*2)%WHISPER_POOL.length;
+    const p=WHISPER_POOL[idx];
+    const uid=(d+i*3)%12+1, rid=(d+i*5+4)%12+1;
+    out.push({
+      id:'D'+idx, userId:uid, nick:nickOfId(uid),
+      createdAt: stampAgo(i===0?0:(i<3?1:2), 8+((d+i*5)%13), (d*7+i*13)%60),
+      content:p.c, likes:(d+i)%4, liked:false,
+      replies: p.r?[{ userId:rid, nick:nickOfId(rid), content:p.r }]:[],
+    });
+  }
+  return out;
+}
 function demoPosition(score){
   const scores=DEMO.scores, n=scores.length;
   if(!score) return null;
@@ -1439,8 +1521,9 @@ async function loadOverview(){
   const el=document.getElementById('homeLive');
   if(!el) return;
   if(!serverOn()||!SVR_UP){
-    renderLive(el, DEMO.overview);
-    renderLive(document.getElementById('peerLive'), DEMO.overview);
+    const ov=demoOverview();
+    renderLive(el, ov);
+    renderLive(document.getElementById('peerLive'), ov);
     return;
   }
   try{
@@ -1448,8 +1531,9 @@ async function loadOverview(){
     renderLive(el, ov);
     renderLive(document.getElementById('peerLive'), ov);
   }catch(e){
-    renderLive(el, DEMO.overview);
-    renderLive(document.getElementById('peerLive'), DEMO.overview);
+    const ov=demoOverview();
+    renderLive(el, ov);
+    renderLive(document.getElementById('peerLive'), ov);
   }
 }
 async function loadPeer(){
@@ -1462,9 +1546,9 @@ async function loadPeer(){
   if(!serverOn()||!SVR_UP){
     /* 未连接后端（例如纯静态托管）：用体验数据展示社区氛围 */
     const lp=loadLocalPeer();
-    renderLive(live, DEMO.overview);
-    renderTopics({ topics: DEMO.topics.map(t=>({ ...t, count:t.count+(lp.pings.indexOf(t.key)>=0?1:0), mine:false, pinged:lp.pings.indexOf(t.key)>=0 })), mine:null });
-    renderBoard({ items: DEMO.board, me:localBoardMe() });
+    renderLive(live, demoOverview());
+    renderTopics({ topics: demoTopics().map(t=>({ ...t, count:t.count+(lp.pings.indexOf(t.key)>=0?1:0), mine:false, pinged:lp.pings.indexOf(t.key)>=0 })), mine:null });
+    renderBoard({ items: demoBoard(), me:localBoardMe() });
     renderWhispers({ items: peerFeedItems(lp) });
     const last=localStorage.getItem('qingya_gad7_last');
     if(last) renderPosition(demoPosition(Number(last)));
@@ -1577,8 +1661,8 @@ function renderWhispers(w){
       <div class="wh-head"><span>${avatarOf(x.nick)} ${escapeHTML(x.nick)}</span><span>${x.createdAt||''}</span></div>
       <div class="wh-body">${escapeHTML(x.content)}</div>
       <div class="wh-act">
-        <button onclick="likeWhisper(${x.id})">👍 ${x.likes}${x.liked?' · 已赞':''}</button>
-        <button onclick="replyWhisper(${x.id})">💬 回应${x.replies.length?'（'+x.replies.length+'）':''}</button>
+        <button onclick="likeWhisper('${x.id}')">👍 ${x.likes}${x.liked?' · 已赞':''}</button>
+        <button onclick="replyWhisper('${x.id}')">💬 回应${x.replies.length?'（'+x.replies.length+'）':''}</button>
       </div>
       ${x.replies.length?`<div class="wh-replies">${x.replies.map(r=>`<div>${avatarOf(r.nick)} <b>${escapeHTML(r.nick)}</b>：${escapeHTML(r.content)}</div>`).join('')}</div>`:''}
     </div>`).join('');
