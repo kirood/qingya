@@ -3,7 +3,10 @@ const { DatabaseSync } = require('node:sqlite');
 const crypto = require('node:crypto');
 const path = require('node:path');
 
-const db = new DatabaseSync(path.join(__dirname, 'qingya.db'));
+/* 数据库文件位置：本地默认在 server 目录；部署到 Render 等平台时，
+   把 DB_PATH 指向持久化磁盘（如 /var/data/qingya.db），否则重新部署会清空数据 */
+const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'qingya.db');
+const db = new DatabaseSync(DB_PATH);
 
 db.exec(`
   PRAGMA journal_mode = WAL;
@@ -259,7 +262,7 @@ function listWhispers(viewerId, limit = 30) {
   const rows = db.prepare(`
     SELECT id, user_id, content, created_at FROM whispers
     WHERE status = 'ok' AND created_at >= datetime('now', '-7 days')
-    ORDER BY id DESC LIMIT ?
+    ORDER BY created_at DESC, id DESC LIMIT ?
   `).all(limit);
 
   const likeMap = {};
